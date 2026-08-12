@@ -10,32 +10,29 @@ import {
 } from "@/shared/components/ui/dialog"
 import { useEffect, useState } from "react";
 import type { DialogPayload } from "../category.model"
-import { normalizeCategoryId } from "@/shared/utils/utils"
 import { useCategoryStore } from "../category.store"
 import AddCategoryDialogBoxFields from "./AddCategoryDialogBoxFields"
+import { createCategory, createSubcategory, updateCategory, updateSubcategory } from "../category.services";
 
 
 export default function AddCategoryDialogBoxContent({ payload }: { payload: DialogPayload }) {
     const [draft, setDraft] = useState<DialogPayload>({ ...payload });
-    const addNewCategory = useCategoryStore(state => state.addNewCategory);
-    const updateCategory = useCategoryStore(state => state.updateCategory);
-    const addNewSubCategory = useCategoryStore(state => state.addNewSubCategory);
-    const updateSubCategory = useCategoryStore(state => state.updateSubCategory);
+
 
     function handleCatSave() {
-        const id = normalizeCategoryId(draft.data.name);
-        if (draft?.mode === "create") {
+        let res = {}
+        if (draft.mode === "create") {
             if (draft.type === "category") {
-                addNewCategory(draft.data);
+                res = createCategory(draft.data);
             } else {
-                addNewSubCategory(draft.data, draft.data.categoryId)
+                createSubcategory(draft.data, draft.data.categoryId)
             }
         }
         else if (draft?.mode === "edit") {
             if (draft.type === "category") {
-                updateCategory(draft.data, id);
+                updateCategory(draft.data);
             } else {
-                updateSubCategory(draft.data, id)
+                updateSubcategory(draft.data)
             }
         }
     }
