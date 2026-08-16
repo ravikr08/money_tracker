@@ -11,3 +11,13 @@ export function normalizeCategoryId(name: string): string {
     .replace(/^_+|_+$/g, "")
     .replace(/_+/g, "_");
 }
+
+export function debounce<T extends unknown[]>( fn: (...args: T) => void,time: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (...args: T): void {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args)
+    }, time)
+  }
+}

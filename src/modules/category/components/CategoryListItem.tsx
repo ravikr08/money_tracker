@@ -6,22 +6,31 @@ import CategoryMenuPopup from "./CategoryMenuPopup";
 import { AccordionContent, AccordionTrigger, AccordionItem } from "@/shared/components/ui/accordion";
 import { Badge } from "@/shared/components/ui/badge";
 import SubCategoryList from "./SubCategoryList";
-import { useCategoryStore } from "../category.store";
+import { useSelector } from "react-redux";
+import { type Dispatch, type SetStateAction } from "react";
 
 
 
-export default function CategoryListItemOld(catObj: Category) {
-    const subCategoriesMap = useCategoryStore(state => state.subCategoriesMap);
+export default function CategoryListItem({catObj,selected,setSelected}:{catObj: Category, selected:string[], setSelected:Dispatch<SetStateAction<string[]>>}) {
+    const subCategoriesMap = useSelector(state=> state.categorySlice.subcategoriesMap);
     function handleCheckboxClick(e) {
-        e.stopPropagation();
+        const checked = e.target.checked;
+        if (checked) {
+            setSelected((prev:string[])=>[...prev,catObj.id])
+        }else{
+            setSelected((prev:string[])=>prev.filter(id=>catObj.id !== id))
+        }
     }
 
+    function isChecked():boolean{
+        return selected.some(id=>id===catObj.id)
+    }
     return (
         <AccordionItem value={catObj.id} className={"relative"}>
 
             <AccordionTrigger className={cn("w-full grid grid-cols-[60px_50px_2.2fr_.8fr_1.1fr_155px_100px_40px] relative items-center p-4 rounded-lg my-2 gap-5 cursor-pointer hover:bg-gray-100 text-center text-sm border-l-4 border-blue-300", catObj.status !== "active" && "opacity-60")} style={{ borderColor: `${catObj.color}B3` }} >
                 <div className="flex items-center gap-5">
-                    <input type="checkbox" className="w-4 h-4 cursor-pointer" onClick={handleCheckboxClick} />
+                    <input type="checkbox" className="w-4 h-4 cursor-pointer" onClick={e=>e.stopPropagation()} onChange={handleCheckboxClick} checked={isChecked()}/>
                     <span>
                         <ChevronRight size={20} className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden" />
                         <ChevronDown size={20} className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline" />
@@ -49,7 +58,7 @@ export default function CategoryListItemOld(catObj: Category) {
                         <Badge className={"bg-coral-soft text-coral"}>Archived</Badge>}
                 </span>
 
-                <CategoryMenuPopup isDefault={catObj.origin === "default"} data={catObj} />
+                <CategoryMenuPopup isActive={catObj.status === "active"} isDefault={catObj.origin === "default"} categoryId={catObj.id} />
             </ AccordionTrigger >
             <AccordionContent>
                 <SubCategoryList subcategories={subCategoriesMap[catObj.id]} color={catObj.color} catId={catObj.id} />

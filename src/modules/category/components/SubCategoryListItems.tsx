@@ -3,12 +3,19 @@ import { Archive, Lock, PenLine, RotateCcw, Trash } from "lucide-react";
 import type { SubCategory } from "../category.model";
 import { cn } from "@/shared/lib/utils";
 import { DialogTrigger } from "@/shared/components/ui/dialog";
-import { CATEGORY_DIALOG_HANDLE } from "../category.contansts";
+import { SUBCATEGORY_DIALOG_HANDLE } from "../category.constants";
+import { categoryServices } from "../category.services";
 
 
 export default function SubCategoryListItem({ subcat, color }: { subcat: SubCategory, color?: string }) {
     const subcatActive = subcat.status === "active";
     const subcatDefault = subcat.origin === "default";
+    function handleSubcategoryArchive(){
+        categoryServices.archiveSubcategories(subcat.id, subcat.categoryId)
+    }
+    function handleSubcategoryRestore(){
+        categoryServices.restoreSubcategories(subcat.id, subcat.categoryId)
+    }
     return (
         <li className="w-full py-2 px-5 grid grid-cols-[30px_1fr_1fr_1fr_120px] items-center border-l-1 border-ink-soft">
             <span className="inline-block w-2 h-2 rounded-md" style={{ background: `${color}99` }}></span>
@@ -26,11 +33,11 @@ export default function SubCategoryListItem({ subcat, color }: { subcat: SubCate
             <span className="flex gap-1.5 text-slate">
                 <span className="p-2 rounded-[7px] hover:bg-slate-soft hover:cursor-pointer hover:text-black">
                     {subcatDefault ? <Lock size={14} /> :
-                        <DialogTrigger render={<PenLine size={14} />} handle={CATEGORY_DIALOG_HANDLE} payload={{ mode: "edit", type: "subcategory", data: { ...subcat } }} />
+                        <DialogTrigger render={<PenLine size={14} />} handle={SUBCATEGORY_DIALOG_HANDLE} payload={{ mode: "edit", id: subcat.id, categoryId:subcat.categoryId }} />
                     }
                 </span>
                 <span className="p-2 rounded-[7px] hover:bg-slate-soft hover:cursor-pointer hover:text-black">
-                    {subcatActive ? <Archive size={14} /> : <RotateCcw size={14} />}
+                    {subcatActive ? <Archive size={14} onClick={handleSubcategoryArchive}/> : <RotateCcw size={14} onClick={handleSubcategoryRestore}/>}
                 </span>
                 <span className={cn("p-2 rounded-[7px] hover:bg-slate-soft hover:cursor-pointer hover:text-black", !subcatDefault && "hover:text-red")}>
                     {subcatDefault ? <Lock size={14} /> : <Trash size={14} />}

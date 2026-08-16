@@ -1,7 +1,11 @@
 import CategoryList from "./components/CategoryList";
 import CategoryFilters from "./components/CategoryFilters";
 import { Badge } from "@/shared/components/ui/badge";
-import { AddCategoryDialogBox } from "./components/AddCategoryDialogBox";
+import { CategoryDialogBox } from "./components/CategoryDialogBox";
+import { SubcategoryDialogBox } from "./components/SubcategoryDialogBox";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import type { Category } from "./category.model";
 
 const BADGES: { value: number; label: string; color: string }[] = [
     { value: 0, label: "categories total", color: "" },
@@ -11,6 +15,17 @@ const BADGES: { value: number; label: string; color: string }[] = [
     { value: 0, label: "custom", color: "blue" },
 ];
 export default function CategoryPage() {
+    const [selected, setSeleted] = useState<string[]>([]);
+    const categories:Category[] = useSelector(state=>state.categorySlice.categories)
+    BADGES.forEach(el=>{
+        if(el.label === "categories total"){
+            el.value = categories.length;
+        }else if (el.label === "active" || el.label === "archived"){
+            el.value = categories.filter((cat:Category)=> cat.status.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
+        }else{
+            el.value = categories.filter((cat:Category)=> cat.origin.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
+        }
+    })
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <div className="flex gap-3">
@@ -33,9 +48,10 @@ export default function CategoryPage() {
                     </Badge>
                 ))}
             </div>
-            <CategoryFilters />
-            <CategoryList />
-            <AddCategoryDialogBox />
+            <CategoryFilters selected={selected} setSelected={setSeleted}/>
+            <CategoryList setSelected={setSeleted} selected={selected} />
+            <CategoryDialogBox />
+            <SubcategoryDialogBox/>
         </div>
     );
 }

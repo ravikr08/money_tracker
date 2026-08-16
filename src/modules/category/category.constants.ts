@@ -1,11 +1,12 @@
 import { Dialog } from "@base-ui/react";
 import type {
   Category,
-  DialogPayload,
+  CategoryDialogPayload,
   InitFiltersValues,
   OriginFilterValues,
   StatusFilterValues,
   SubCategory,
+  SubcategoryDialogPayload,
   TypeFilterValues,
 } from "./category.model";
 
@@ -321,13 +322,14 @@ export const AVAILABLE_CATEGORY_ICONS = [
   "❓",
 ];
 
-export const createInitialCategory = () => ({
+export const createInitialCategory = (): Pick<Category, "name"|"icon"|"color"|"type"> => ({
   name: "",
   type: "expense",
   color: AVAILABLE_CATEGORY_COLORS[0],
   icon: AVAILABLE_CATEGORY_ICONS[0],
 });
-export const createInitialSubCategory = () => ({
+
+export const createInitialSubCategory = (): Pick<SubCategory, "name"> => ({
   name: "",
 });
 
@@ -359,7 +361,8 @@ export const CATEGORY_STATUS_FILTER_OPTIONS: {
 export const DEFAULT_INITIAL_FILTERS: InitFiltersValues = {
   type: "all",
   origin: "all",
-  status: "all",
+  status: "active",
 };
 
-export const CATEGORY_DIALOG_HANDLE = Dialog.createHandle<DialogPayload>();
+export const CATEGORY_DIALOG_HANDLE = Dialog.createHandle<CategoryDialogPayload>();
+export const SUBCATEGORY_DIALOG_HANDLE = Dialog.createHandle<SubcategoryDialogPayload>();

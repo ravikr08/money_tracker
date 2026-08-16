@@ -1,29 +1,29 @@
-import type { TransactionTypes } from "../transactions/transaction.model";
-export type Category = {
-  id: string;
+export type CategoryTypes = "income" | "expense";
+
+  export type Category =  {
   name: string;
   icon: string;
-  type: TransactionTypes;
+  type: CategoryTypes;
+  color: string;
+  id: string;
   origin: "default" | "custom";
   status: "active" | "archived";
-  color: string;
 };
 
 export type SubCategory = {
-  id: string;
   name: string;
+  id: string;
   origin: "default" | "custom";
   status: "active" | "archived";
   categoryId: string;
 };
-
+export type CategoryInputValues = Pick<Category, "name"|"icon"|"color"|"type">
+export type SubcategoryInputValues = Pick<Category, "name">
 export type TypeFilterValues = "all" | "income" | "expense";
 
 export type OriginFilterValues = "all" | "default" | "custom";
 
 export type StatusFilterValues = "all" | "active" | "archived";
-
-export type CategoryTypes = "income" | "expense";
 
 export type SubCategoryMap = Record<string, SubCategory[]>;
 
@@ -33,30 +33,28 @@ export type InitFiltersValues = {
   status: StatusFilterValues;
 };
 
-export type CategoryPayload = {
-  type: "category";
-  mode: "edit" | "create";
-  data: Category;
+export type EditCategoryPayload = {
+  mode: "edit";
+  id: string;
+};
+export type CreateCategoryPayload = {
+  mode: "create";
 };
 
-export type SubCategoryPayload = {
-  type: "subcategory";
-  mode: "edit" | "create";
-  data: SubCategory;
+export type EditSubCategoryPayload = {
+  mode: "edit";
+  id: string;
+  categoryId: string;
+};
+export type CreateSubCategoryPayload = {
+  mode: "create";
+  categoryId: string;
 };
 
-export type DialogPayload = CategoryPayload | SubCategoryPayload;
+export type CategoryDialogPayload =
+  | EditCategoryPayload
+  | CreateCategoryPayload
 
-export type CategoryStore = {
-  categories: Category[];
-  subCategoriesMap: SubCategoryMap;
-  addNewCategory: (newCat: Category) => void;
-  updateCategory: (updatedCat: Category, oldId: string) => void;
-  addNewSubCategory: (newSubCat: SubCategory, catId: string) => void;
-  updateSubCategory: (
-    updatedSubCategory: SubCategory,
-    oldSubCatId: string,
-  ) => void;
-  filters: InitFiltersValues;
-  setFilters: (filter: Partial<InitFiltersValues>) => void;
-};
+export type SubcategoryDialogPayload =
+  | EditSubCategoryPayload
+  | CreateSubCategoryPayload

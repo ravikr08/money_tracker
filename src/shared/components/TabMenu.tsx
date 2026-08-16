@@ -1,7 +1,7 @@
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { cn } from "../lib/utils";
 
-export default function TabMenu<T>({ tabs, selectedTab, onTabChange, bgClass, btnActiveClass, disabled }: { tabs: { value: string; label: string }[], selectedTab: string, onTabChange: (tab: T) => void, bgClass?: string, btnActiveClass?: string, disabled?: boolean }) {
+export default function TabMenu<T extends string>({ tabs, selectedTab, onTabChange, bgClass, btnActiveClass, disabled }: { tabs: { value: T; label: string }[], selectedTab: T, onTabChange: (tab: T) => void, bgClass?: string, btnActiveClass?: string, disabled?: boolean }) {
     return (
         <Tabs value={selectedTab} onValueChange={onTabChange} aria-disabled={disabled}>
             <TabsList className={cn("rounded-xl bg-white py-5 aria-disabled:cursor-not-allowed", bgClass)} aria-disabled={disabled}>
