@@ -1,4 +1,4 @@
-import { appStore } from "@/app/appStore";
+import { appStore } from "@/app/app.store";
 import {
   categoryAdded,
   categoryUpdated,

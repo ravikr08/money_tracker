@@ -27,12 +27,12 @@ export default function CategoryPage() {
         }
     })
     return (
-        <div className="w-full h-full flex flex-col gap-4">
-            <div className="flex gap-3">
+        <div className="w-full h-full flex flex-col gap-4 xl:gap-5">
+            <div className="flex gap-2 sm:gap-3 overflow-x-auto md:flex-wrap shrink-0 [scrollbar-width:none]! [&::-webkit-scrollbar]:hidden">
                 {BADGES.map((badge) => (
                     <Badge
                         key={badge.label}
-                        className={`bg-white text-slate px-3 py-2 rounded-full text-[12px] font-semibold flex items-baseline`}
+                        className={`bg-white text-slate px-3 py-2 rounded-full text-[12px] font-semibold flex items-baseline shrink-0 whitespace-nowrap`}
                     >
                         <span className="flex items-center gap-1 mr-1">
 

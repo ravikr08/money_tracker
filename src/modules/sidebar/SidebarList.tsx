@@ -1,5 +1,5 @@
 import {cn} from '@/shared/lib/utils'
-import type { Page } from './SideBar';
+import type { Page } from './sidebar.constants';
 import { NavLink } from 'react-router-dom';
 export type ListProps = Page & {
     isActive : boolean;
@@ -9,11 +9,10 @@ function SidebarList({icon:Icon, label, path, isActive}: ListProps){
 
 
     return(
-        <li className = {"flex w-full justify-start items-center px-2.5" } >
-            <NavLink to={path} className={cn("flex w-full items-center rounded-md relative gap-2 px-3 py-2 text-gray-500", isActive && "bg-blue-soft text-blue font-semibold")}>
-            <span><Icon size={18}/></span>
+        <li className = {"flex w-full justify-start items-center" } >
+            <NavLink to={path} className={cn("flex w-full items-center rounded-[10px] gap-3 px-3 py-2.5 text-[14px] font-medium text-[#586079] hover:bg-bg", isActive && "bg-(--nav-active-bg) text-(--nav-active-fg) font-semibold hover:bg-(--nav-active-bg)")}>
+            <Icon size={18} strokeWidth={1.8}/>
             <span>{label}</span>
-            <span className={cn("absolute right-0 top-0 rounded-r-lg flex bg-blue h-full w-2", !isActive && "bg-white")}></span>
             </NavLink>
         </li>
     )

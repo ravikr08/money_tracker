@@ -27,6 +27,7 @@ import { Label } from "@/shared/components/ui/label"
 import TabMenu from "@/shared/components/TabMenu";
 import { type Dispatch, type SetStateAction } from "react";
 import { AVAILABLE_CATEGORY_COLORS, AVAILABLE_CATEGORY_ICONS } from "../category.constants";
+import { CATEGORY_ICONS } from "../category.icons";
 import { cn } from "@/shared/lib/utils";
 
 
@@ -78,7 +79,7 @@ function CategoryDialogBoxContent({ payload }: { payload: CategoryDialogPayload 
     setDraft(getDraftData(payload));
   }, [payload])
 
-  return (<DialogContent className="px-7 py-6 sm:max-w-xl" >
+  return (<DialogContent className="px-4 py-5 sm:px-7 sm:py-6 sm:max-w-lg max-h-[90dvh] overflow-y-auto" >
     <DialogHeader>
       <DialogTitle>{(payload.mode === "edit" ? "Edit" : "New") + " " + "Category"}</DialogTitle>
       <DialogDescription>Categories organise your transactions into meaningful groups.</DialogDescription>
@@ -130,7 +131,10 @@ function CategoryDialogBoxFields({ draft, setDraft }: propsType) {
       <Field>
         <Label className="text-slate">Icons</Label>
         <div className="flex gap-2.5 flex-wrap w-full h-35 overflow-y-scroll scroll">
-          {AVAILABLE_CATEGORY_ICONS.map(icon => <button key={icon} className={cn("flex items-center justify-center w-10 h-10 text-xl rounded-sm text-white cursor-pointer bg-blue-100", draft.data.icon === icon && "border-2 border-[#8B7CF6]")} onClick={() => handleFieldValueChange("icon", icon)}>{icon}</button>)}
+          {AVAILABLE_CATEGORY_ICONS.map(icon => {
+            const Icon = CATEGORY_ICONS[icon];
+            return <button key={icon} aria-label={icon} className={cn("flex items-center justify-center w-10 h-10 rounded-sm text-slate cursor-pointer bg-[#F3F5FC]", draft.data.icon === icon && "border-[2px] border-blue-500 text-blue")} onClick={() => handleFieldValueChange("icon", icon)}><Icon size={20} strokeWidth={1.8} /></button>
+          })}
         </div>
       </Field>
     </FieldGroup >

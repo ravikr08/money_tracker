@@ -302,3 +302,19 @@ html {
     @apply font-sans;
   }
 }
+
+/* colours the app shell takes from the page: the active menu item and the avatar.
+   a page can turn them green by putting .theme-green on the root (see App.tsx) */
+:root {
+  --nav-active-bg: #E6EAFF;
+  --nav-active-fg: #2A3BC4;
+  --avatar-bg: #3347E0;
+  --avatar-bg-md: #3B82F6;
+}
+.theme-green {
+  --nav-active-bg: #DDF3EE;
+  --nav-active-fg: #0A5F52;
+  --avatar-bg: #0E7C6B;
+  --avatar-bg-md: #0E7C6B;
+  --bg: #F2F5F4;
+}

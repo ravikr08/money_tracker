@@ -21,3 +21,19 @@ export function debounce<T extends unknown[]>( fn: (...args: T) => void,time: nu
     }, time)
   }
 }
+
+export function formatCurrency(amount: number) {
+  // 1000 stays 1,000 but 1000.5 becomes 1,000.50
+  const decimals = Number.isInteger(amount) ? 0 : 2;
+  const formatted = Math.abs(amount).toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return (amount < 0 ? "-" : "") + "₹" + formatted;
+}
+
+
+// a soft background and a darker colour for icons, both made from one colour
+export function getColorShades(color: string) {
+  return {
+    soft: `${color}22`,
+    ink: `color-mix(in srgb, ${color} 62%, black)`,
+  };
+}

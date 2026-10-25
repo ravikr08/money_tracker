@@ -6,10 +6,17 @@ import AnalyticsPage from "@/modules/analytics/AnalyticsPage"
 import SettingsPage from "@/modules/settings/SettingsPage"
 import TransactionPage from "@/modules/transactions/TransactionsPage"
 import CategoryPage from "@/modules/category/CategoryPage";
+import { appLoader } from "./app.loader";
+import { AppError, AppLoading } from "./AppFallbacks";
 
 export const Router = createBrowserRouter([
     {
         element: <App/>,
+        // loads the saved data into the store before any page renders
+        loader: appLoader,
+        shouldRevalidate: () => false,
+        HydrateFallback: AppLoading,
+        errorElement: <AppError/>,
         children: [
             {
                 index: true,

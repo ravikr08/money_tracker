@@ -9,26 +9,12 @@ import type {
   SubCategoryMap,
 } from "./category.model";
 
-function createInitialState() {
-  const categories:Category[] = DEFAULT_CATEGORIES.map((cat) => ({
-    ...cat,
-    id: crypto.randomUUID(),
-  }));
-  const subcategoriesMap: SubCategoryMap = {};
-  Object.keys(DEFAULT_SUBCATEGORIES_MAP).forEach((key) => {
-    const catObj = categories.find((cat) => cat.name.toLowerCase() === key);
-    if (catObj?.id) {
-      subcategoriesMap[catObj.id] = DEFAULT_SUBCATEGORIES_MAP[key].map(subcat => ({ ...subcat, categoryId: catObj.id }));
-    }
-  });
-  return {
-    categories,
-    subcategoriesMap,
-    filters: DEFAULT_INITIAL_FILTERS,
-  };
-}
-
-const initialState = createInitialState();
+// copies so the default constants themselves don't get frozen by immer
+const initialState = {
+  categories: DEFAULT_CATEGORIES.map((cat) => ({ ...cat })) as Category[],
+  subcategoriesMap: structuredClone(DEFAULT_SUBCATEGORIES_MAP) as SubCategoryMap,
+  filters: DEFAULT_INITIAL_FILTERS,
+};
 
 const categorySlice = createSlice({
   name: "categories",

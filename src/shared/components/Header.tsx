@@ -1,5 +1,5 @@
 import { Bell, Search } from "lucide-react"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const pages: { [key: string]: { title: string; subtitle: string } } = {
     "category": {
@@ -31,32 +31,31 @@ export default function Header() {
     const { title, subtitle } = pages[pageKey] || { title: "Dashboard", subtitle: "Overview of your financial activities." };
 
     return (
-        <header className="w-full flex justify-between items-center">
-            <div className="flex flex-col gap-1">
-
-                <h1 className="text-2xl font-bold">{title}</h1>
-                <p className="text-slate text-sm">
-                    {subtitle}
-                </p>
-            </div>
-            <div className="flex items-center gap-2">
-                <span className="bg-white p-3.5 rounded-full cursor-pointer">
-                    <Search size={18} />
+        // phone: title and icons in one row, subtitle below
+        // tablet and desktop: title and subtitle on the left, icons on the right
+        <header className="w-full grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5">
+            <h1 className="text-[26px] leading-8 tracking-tight md:text-2xl md:leading-normal md:tracking-normal font-bold min-w-0 col-start-1">{title}</h1>
+            <p className="text-slate text-sm leading-5 md:leading-normal col-[1/-1] md:col-[1] md:max-w-[340px] lg:max-w-none">
+                {subtitle}
+            </p>
+            <div className="flex items-center gap-2 shrink-0 col-start-2 row-start-1 md:row-span-2">
+                <span className="bg-white size-11 grid place-items-center md:size-auto md:block md:p-3.5 rounded-full cursor-pointer">
+                    <Search className="size-5 md:size-[18px]" />
                 </span>
-                <span className="bg-white p-3.5 rounded-full cursor-pointer">
-                    <Bell size={18} />
+                <span className="bg-white size-11 grid place-items-center md:size-auto md:block md:p-3.5 rounded-full cursor-pointer">
+                    <Bell className="size-5 md:size-[18px]" />
                 </span>
-                <div className="flex items-center gap-2 bg-white pl-2 pr-5 py-1.5 rounded-full cursor-pointer">
-                    <span className="bg-blue-500 w-10 h-10 flex items-center justify-center rounded-full text-white font-bold ">
+                <Link to="/settings" className="flex items-center gap-2 md:bg-white md:pl-2 md:pr-5 md:py-1.5 rounded-full cursor-pointer">
+                    <span className="bg-(--avatar-bg) md:bg-(--avatar-bg-md) size-11 md:size-10 flex items-center justify-center rounded-full text-white font-semibold md:font-bold ">
                         M
                     </span>
-                    <div className="flex flex-col">
+                    <div className="hidden md:flex flex-col">
                         <h3 className="font-bold text-sm">Madan Gowda</h3>
-                        <p className="text-sm text-slate">
+                        <p className="hidden lg:block text-sm text-slate">
                             madangowda@gmail.com
                         </p>
                     </div>
-                </div>
+                </Link>
             </div>
         </header>
     )

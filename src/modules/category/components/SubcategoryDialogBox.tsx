@@ -71,7 +71,7 @@ function SubcategoryDialogBoxContent({ payload }: { payload: SubcategoryDialogPa
         setDraft(() => getDraftData(payload));
     }, [payload])
 
-    return (<DialogContent className="px-7 py-6 sm:max-w-xl" >
+    return (<DialogContent className="px-4 py-5 sm:px-7 sm:py-6 sm:max-w-lg max-h-[90dvh] overflow-y-auto" >
         <DialogHeader>
             <DialogTitle>{(payload.mode === "edit" ? "Edit" : "New") + " " + "Subcategory"}</DialogTitle>
             <DialogDescription>A finer split within this category.</DialogDescription>
