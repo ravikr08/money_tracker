@@ -1,0 +1,11 @@
+{
+  // the name must be the same as the project name in Cloudflare
+  "name": "money-manager",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    // the output of `vite build`
+    "directory": "./dist",
+    // opening /accounts or /category directly (or refreshing) gives index.html, the router then shows the page
+    "not_found_handling": "single-page-application"
+  }
+}
