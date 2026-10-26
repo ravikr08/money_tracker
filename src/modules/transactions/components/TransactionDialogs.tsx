@@ -8,6 +8,7 @@ import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { formatCurrency } from "@/shared/utils/utils";
 import { AccountsTypeNameMap } from "@/modules/accounts/accounts.constants";
 import { selectSortedAccounts, selectSortedCreditCards } from "@/modules/accounts/accounts.selectors";
+import { accountsServices } from "@/modules/accounts/accounts.services";
 import { TRANSACTION_DELETE_HANDLE, TRANSACTION_EDIT_HANDLE } from "../transactions.constants";
 import { selectTransactions } from "../transactions.selectors";
 import { transactionServices } from "../transaction.services";
@@ -151,6 +152,8 @@ function EditForm({ transaction, initialType }: { transaction?: Transaction, ini
     const startCategory = categories.find(cat => cat.status === "active" && cat.type === startType);
     const [type, setType] = useState<TransactionTypes>(startType);
     const [amount, setAmount] = useState(transaction ? String(transaction.amount) : "");
+    // what is wrong with the amount, for now only a payment that is more than what is owed on the card
+    const [amountError, setAmountError] = useState("");
     const [title, setTitle] = useState(transaction?.title ?? "");
     const [categoryId, setCategoryId] = useState(transaction?.categoryId ?? startCategory?.id ?? "");
     const [subCategoryId, setSubCategoryId] = useState(() => {
@@ -182,7 +185,7 @@ function EditForm({ transaction, initialType }: { transaction?: Transaction, ini
         value: card.id,
         label: `${card.name} · Credit card`,
         name: card.name,
-        sub: card.status === "archived" ? "Archived account" : `Credit card · ${formatCurrency(card.totalDueAmount)} due`,
+        sub: card.status === "archived" ? "Archived account" : `Credit card · ${formatCurrency(accountsServices.getCreditCardOutstanding(card.id))} due`,
         disabled: card.status === "archived",
     }));
     // the category types are the same four as the transaction types. transfer and card bill have one category each, no select for it
@@ -226,6 +229,20 @@ function EditForm({ transaction, initialType }: { transaction?: Transaction, ini
     function handleSave() {
         const value = parseFloat(amount);
         if (Number.isNaN(value) || value <= 0) return;
+        // a payment goes to a credit card and can't be more than what is owed on it (BR-CC-004, BR-CC-006).
+        // when a payment is edited, its own old amount is not counted as paid yet
+        if (type === "payment") {
+            const card = cards.find(c => c.id === to);
+            if (!card) {
+                setAmountError("Pick the credit card this payment is for.");
+                return;
+            }
+            const owed = accountsServices.getCreditCardOutstanding(card.id) + (transaction?.type === "payment" && transaction.toAccountId === card.id ? transaction.amount : 0);
+            if (value > owed) {
+                setAmountError(`A payment can't be more than what is owed on ${card.name} (${formatCurrency(owed)}).`);
+                return;
+            }
+        }
         // which accounts a type uses: expense takes from one, income puts into one, transfer and card bill have both
         const uses = { from: type === "expense" || type === "transfer" || type === "payment", to: type !== "expense" };
         const data = {
@@ -285,8 +302,9 @@ function EditForm({ transaction, initialType }: { transaction?: Transaction, ini
 
                 <label className="flex items-center justify-center gap-2 h-16 rounded-2xl bg-[#F1F4F3]">
                     <span className="type-stat font-semibold text-[#5A6B68]">₹</span>
-                    <input type="text" inputMode="decimal" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" aria-label="Amount" className="w-40 border-0 outline-0 bg-transparent type-display font-bold text-[#11201E] placeholder:text-[#7B8A87]" />
+                    <input type="text" inputMode="decimal" value={amount} onChange={e => { setAmount(e.target.value); setAmountError(""); }} placeholder="0.00" aria-label="Amount" className="w-40 border-0 outline-0 bg-transparent type-display font-bold text-[#11201E] placeholder:text-[#7B8A87]" />
                 </label>
+                {amountError && <span role="alert" className="px-1 type-label text-[#D92D20]">{amountError}</span>}
 
                 <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title, e.g. Dinner with friends" aria-label="Title" className={fieldClass} />
 

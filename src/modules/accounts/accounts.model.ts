@@ -13,9 +13,10 @@ export type CreditCardAccount = {
   name: string;
   type: "credit-card";
 
+  // what was owed before the first transaction of the card (the opening outstanding), like the opening balance of an account.
+  // what is owed now is this plus the spending on the card minus the bill payments (BR-FIN-002), see accountsServices.getCreditCardOutstanding.
+  // the amount of the statement and the total due are what is owed now, there is nothing else stored for them
   outstandingBalance: number;
-  currentStatementAmount: number;
-  totalDueAmount: number;
 
   creditLimit: number;
   statementDate: number;

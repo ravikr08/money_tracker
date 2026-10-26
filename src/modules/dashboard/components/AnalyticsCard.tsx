@@ -4,7 +4,8 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { formatCurrency } from "@/shared/utils/utils";
 import TabMenu from "@/shared/components/TabMenu";
-import { chartScale, formatAxis, type Bucket, type CategorySpend } from "../dashboard.utils";
+import type { CategorySpend } from "@/modules/transactions/transactions.utils";
+import { chartScale, formatAxis, type Bucket } from "../dashboard.utils";
 
 type ChartKey = "compare" | "category" | "cashflow";
 const TABS: { value: ChartKey; label: string }[] = [
@@ -68,15 +69,15 @@ function BarChart({ buckets, mode }: { buckets: Bucket[]; mode: "compare" | "net
 type CategoryInfo = { id: string; name: string; color: string };
 
 // the biggest five, everything else is one "Others" row
-function CategoryBars({ spend, categories }: { spend: CategorySpend[]; categories: CategoryInfo[] }) {
-    const total = spend.reduce((sum, s) => sum + s.amount, 0);
+function CategoryBars({ spend, categories, total }: { spend: CategorySpend[]; categories: CategoryInfo[]; total: number }) {
     if (total === 0) return <p className="py-10 text-center type-body text-[#5A6B68]">No expenses in this period.</p>;
 
     const rows = spend.slice(0, 5).map(s => {
         const cat = categories.find(c => c.id === s.categoryId);
         return { key: s.categoryId, name: cat?.name ?? "Other", color: cat?.color ?? "#94A3B8", amount: s.amount };
     });
-    const rest = spend.slice(5).reduce((sum, s) => sum + s.amount, 0);
+    // everything after the first five is one "Others" row. what the first five add up to is taken from the total, not added again
+    const rest = Math.round((total - rows.reduce((sum, row) => sum + row.amount, 0)) * 100) / 100;
     if (rest > 0) rows.push({ key: "others", name: "Others", color: "#94A3B8", amount: rest });
 
     return (
@@ -105,9 +106,11 @@ type AnalyticsCardProps = {
     categories: CategoryInfo[];
     income: number;
     expense: number;
+    // income − expense, given by the transaction service (getCashFlow)
+    net: number;
 }
 
-export default function AnalyticsCard({ periodLabel, rangeLabel, buckets, spend, categories, income, expense }: AnalyticsCardProps) {
+export default function AnalyticsCard({ periodLabel, rangeLabel, buckets, spend, categories, income, expense, net }: AnalyticsCardProps) {
     const [chart, setChart] = useState<ChartKey>("compare");
     const legend = (color: string, label: string, value: number) => (
         <span className="inline-flex items-center gap-1.5 type-caption text-[#5A6B68]"><span className="size-2 rounded-full" style={{ backgroundColor: color }} />{label} <b className="text-[#11201E]">{formatCurrency(value)}</b></span>
@@ -134,12 +137,12 @@ export default function AnalyticsCard({ periodLabel, rangeLabel, buckets, spend,
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 {chart === "compare" && <>{legend(INCOME_COLOR, "Income", income)}{legend(EXPENSE_COLOR, "Expense", expense)}</>}
                 {chart === "category" && legend(EXPENSE_COLOR, "Total expense", expense)}
-                {chart === "cashflow" && legend(INCOME_COLOR, "Net cash flow", income - expense)}
+                {chart === "cashflow" && legend(INCOME_COLOR, "Net cash flow", net)}
             </div>
 
             {chart === "compare" && <BarChart buckets={buckets} mode="compare" />}
             {chart === "cashflow" && <BarChart buckets={buckets} mode="net" />}
-            {chart === "category" && <CategoryBars spend={spend} categories={categories} />}
+            {chart === "category" && <CategoryBars spend={spend} categories={categories} total={expense} />}
         </section>
     )
 }

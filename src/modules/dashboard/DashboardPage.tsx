@@ -5,17 +5,15 @@ import type { RootState } from "@/app/app.store";
 import { FilterDropdown } from "@/modules/transactions/components/TransactionsFilters";
 import { transactionServices } from "@/modules/transactions/transaction.services";
 import { selectTransactions } from "@/modules/transactions/transactions.selectors";
-import { summarizeTransactions } from "@/modules/transactions/transactions.utils";
 import { TransactionDeleteDialog, TransactionEditDialog } from "@/modules/transactions/components/TransactionDialogs";
 import TransactionDetailsDrawer from "@/modules/transactions/components/TransactionDetailsDrawer";
-import { selectActiveAccountsCount, selectTotalBalance } from "@/modules/accounts/accounts.selectors";
 import QuickActions from "./components/QuickActions";
 import DashboardAddMenu from "./components/DashboardAddMenu";
 import BalanceCards from "./components/BalanceCards";
 import AnalyticsCard from "./components/AnalyticsCard";
 import RecentTransactions from "./components/RecentTransactions";
 import { DASHBOARD_PERIOD_OPTIONS } from "./dashboard.constants";
-import { buildBuckets, expenseByCategory, formatDashboardRange, getDashboardRanges, type DashboardPeriod } from "./dashboard.utils";
+import { buildBuckets, formatDashboardRange, getDashboardRanges, type DashboardPeriod } from "./dashboard.utils";
 
 // the title is in the header of the app. the filter at the top sets the period of the cards and of the analytics,
 // the recent transactions have their own filter
@@ -23,22 +21,20 @@ export default function DashboardPage() {
     const [period, setPeriod] = useState<DashboardPeriod>("thisMonth");
     const transactions = useSelector(selectTransactions);
     const categories = useSelector((state: RootState) => state.categorySlice.categories);
-    const totalBalance = useSelector(selectTotalBalance);
-    const accountsCount = useSelector(selectActiveAccountsCount);
 
     const data = useMemo(() => {
         const ranges = getDashboardRanges(period);
-        // the same filter of the transaction service the transactions page uses
-        const current = transactionServices.filterTransactions(transactions, ranges.current);
-        const previous = transactionServices.filterTransactions(transactions, ranges.previous);
+        // none of the numbers are added up here (income, expense, net cash flow, what was spent per category),
+        // the transaction service gives them, the same as to every other module. the total balance card shows the net cash flow
         return {
             rangeLabel: formatDashboardRange(ranges.current),
             previousLabel: ranges.previousLabel,
-            current: summarizeTransactions(current),
-            previous: summarizeTransactions(previous),
-            buckets: buildBuckets(current, period),
-            spend: expenseByCategory(current),
+            current: transactionServices.getCashFlow(ranges.current),
+            previous: transactionServices.getCashFlow(ranges.previous),
+            buckets: buildBuckets(period),
+            spend: transactionServices.getExpenseByCategory(ranges.current),
         };
+        // the service reads the store itself, so the list is here to run it again when a transaction changes
     }, [transactions, period]);
 
     const periodLabel = DASHBOARD_PERIOD_OPTIONS.find(o => o.value === period)?.label ?? "";
@@ -55,11 +51,11 @@ export default function DashboardPage() {
                 <QuickActions className="order-2 md:order-1" />
             </div>
 
-            <BalanceCards totalBalance={totalBalance} accountsCount={accountsCount} current={data.current} previous={data.previous} previousLabel={data.previousLabel} />
+            <BalanceCards current={data.current} previous={data.previous} previousLabel={data.previousLabel} />
 
             {/* phone and tablet: one under the other. desktop: side by side, the chart gets the wider part */}
             <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] xl:gap-5">
-                <AnalyticsCard periodLabel={periodLabel} rangeLabel={data.rangeLabel} buckets={data.buckets} spend={data.spend} categories={categories} income={data.current.income} expense={data.current.expense} />
+                <AnalyticsCard periodLabel={periodLabel} rangeLabel={data.rangeLabel} buckets={data.buckets} spend={data.spend} categories={categories} income={data.current.income} expense={data.current.expense} net={data.current.net} />
                 <RecentTransactions />
             </div>
 

@@ -116,9 +116,7 @@ export const creditCardAccounts: CreditCardAccount[] = [
     name: "Visa Signature",
     type: "credit-card",
 
-    outstandingBalance: 18500,
-    currentStatementAmount: 18500,
-    totalDueAmount: 18500,
+    outstandingBalance: 18500,
 
     creditLimit: 150000,
     statementDate: 10,
@@ -132,9 +130,7 @@ export const creditCardAccounts: CreditCardAccount[] = [
     name: "Millennia Credit Card",
     type: "credit-card",
 
-    outstandingBalance: 32400,
-    currentStatementAmount: 32400,
-    totalDueAmount: 32400,
+    outstandingBalance: 32400,
 
     creditLimit: 100000,
     statementDate: 15,
@@ -148,9 +144,7 @@ export const creditCardAccounts: CreditCardAccount[] = [
     name: "Amazon Pay Card",
     type: "credit-card",
 
-    outstandingBalance: 8750,
-    currentStatementAmount: 8750,
-    totalDueAmount: 8750,
+    outstandingBalance: 8750,
 
     creditLimit: 75000,
     statementDate: 20,

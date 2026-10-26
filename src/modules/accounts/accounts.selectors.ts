@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "@/app/app.store";
+import { transactionServices } from "@/modules/transactions/transaction.services";
 
 export const selectAccounts = (state: RootState) =>
   state.accountsSlice.accounts;
@@ -28,11 +29,13 @@ export function selectAccountBalance(state: RootState, accountId: string) {
   return account.openingBalance;
 }
 
-// same idea for credit cards (BR-FIN-002), spending increases it, bill payments decrease it
+// what is owed on a credit card (BR-FIN-002): the opening outstanding of the card, plus the spending with it, minus the bill payments.
+// what the transactions did is worked out by the transactions module, the list is the one of the state so the selector stays pure
 export function selectCreditCardOutstanding(state: RootState, cardId: string) {
   const card = state.accountsSlice.creditCards.find((c) => c.id === cardId);
   if (!card) return 0;
-  return card.outstandingBalance;
+  const { net } = transactionServices.getCreditCardMovement(cardId, state.transactionsSlice.transactions);
+  return round2(card.outstandingBalance + net);
 }
 
 // 0.1 + 0.2 isn't 0.3 in js, so sums are rounded to 2 decimals (BR-GEN-002)

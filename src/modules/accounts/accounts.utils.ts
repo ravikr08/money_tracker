@@ -10,24 +10,29 @@ export function isValidDayOfMonth(day: number) {
   return Number.isInteger(day) && day >= 1 && day <= 31;
 }
 
-// RECREATED after being overwritten by mistake, compare with your git / editor history version
-// next payment due date of a credit card and a short status text for it
-// paymentDueDay is the day of the month (1-31)
-export function getDueInfo(paymentDueDay: number, totalDueAmount: number) {
-  const today = new Date();
-  const dueDate = new Date(today.getFullYear(), today.getMonth(), paymentDueDay);
+// the next payment due date of a credit card and a short status text for it.
+// paymentDueDay is the day of the month (1-31), `outstanding` is what is owed now.
+// days are counted as whole calendar days, so a card that is due today says "Due today" (not next month).
+// a day that a month does not have (the 31st in April) is the last day of that month
+export function getDueInfo(paymentDueDay: number, outstanding: number, now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const dueIn = (year: number, month: number) => {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    return new Date(year, month, Math.min(paymentDueDay, daysInMonth));
+  };
 
   // this month's date is already gone, so the next one is next month
+  let dueDate = dueIn(today.getFullYear(), today.getMonth());
   if (dueDate < today) {
-    dueDate.setMonth(dueDate.getMonth() + 1);
+    dueDate = dueIn(today.getFullYear(), today.getMonth() + 1);
   }
 
-  const daysUntilDue = Math.ceil(
-    (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  // rounded because a day is not always 24 hours (clocks change)
+  const daysUntilDue = Math.round((dueDate.getTime() - today.getTime()) / 86_400_000);
 
   const paymentStatus =
-    totalDueAmount <= 0
+    outstanding <= 0
       ? "Paid"
       : daysUntilDue === 0
         ? "Due today"
@@ -39,5 +44,5 @@ export function getDueInfo(paymentDueDay: number, totalDueAmount: number) {
     year: "numeric",
   });
 
-  return { paymentStatus, formattedDueDate };
+  return { paymentStatus, formattedDueDate, daysUntilDue };
 }

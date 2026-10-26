@@ -3,6 +3,7 @@ import type { RootState } from "@/app/app.store";
 import type { CreditCardAccount } from "../accounts.model";
 import { ACCOUNTS_DRAWER_HANDLE } from "../accounts.constants";
 import { selectCreditCardOutstanding } from "../accounts.selectors";
+import { getDueInfo } from "../accounts.utils";
 import { DrawerTrigger } from "@/shared/components/ui/drawer";
 import AccountsMenuPopup from "./AccountsMenuPopup";
 import { cn } from "@/shared/lib/utils";
@@ -22,34 +23,8 @@ export function CreditCardDisplayCard({ account }: CreditCardProps) {
       ? (outstanding / account.creditLimit) * 100
       : 0;
 
-  const today = new Date();
-
-  const dueDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    account.paymentDueDate
-  );
-
-  if (dueDate < today) {
-    dueDate.setMonth(dueDate.getMonth() + 1);
-  }
-
-  const daysUntilDue = Math.ceil(
-    (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  const paymentStatus =
-    account.totalDueAmount <= 0
-      ? "Paid"
-      : daysUntilDue === 0
-        ? "Due today"
-        : `Due in ${daysUntilDue}d`;
-
-  const formattedDueDate = dueDate.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  // the same function as the details drawer, so the two always agree
+  const { paymentStatus, formattedDueDate } = getDueInfo(account.paymentDueDate, outstanding);
 
   const icon = (
     <span className="size-11 md:size-12 shrink-0 grid place-items-center rounded-full bg-white/15"><CreditCard size={20} strokeWidth={1.8} /></span>

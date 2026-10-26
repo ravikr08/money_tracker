@@ -95,6 +95,33 @@ export function summarizeTransactions(list: Transaction[]) {
   };
 }
 
+// what the transactions did to a credit card: spending with it adds to what is owed, bill payments to it take away (BR-CC-002, BR-CC-003).
+// archived and deleted ones count for nothing. `net` is spent − paid
+export function creditCardMovement(list: Transaction[], cardId: string) {
+  let spent = 0;
+  let paid = 0;
+  for (const t of list) {
+    if (t.isDeleted || t.isArchived) continue;
+    if (t.type === "expense" && t.fromAccountId === cardId) spent += t.amount;
+    else if (t.type === "payment" && t.toAccountId === cardId) paid += t.amount;
+  }
+  return { spent: round2(spent), paid: round2(paid), net: round2(spent - paid) };
+}
+
+export type CategorySpend = { categoryId: string; amount: number };
+
+// what was spent per category, the biggest first. archived ones are not counted
+export function expenseByCategory(list: Transaction[]): CategorySpend[] {
+  const totals = new Map<string, number>();
+  for (const t of list) {
+    if (t.isDeleted || t.isArchived || t.type !== "expense") continue;
+    totals.set(t.categoryId, (totals.get(t.categoryId) ?? 0) + t.amount);
+  }
+  return [...totals.entries()]
+    .map(([categoryId, amount]) => ({ categoryId, amount: round2(amount) }))
+    .sort((a, b) => b.amount - a.amount);
+}
+
 export type TransactionGroupData = {
   key: string;
   label: string;

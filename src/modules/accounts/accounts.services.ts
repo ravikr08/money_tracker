@@ -17,6 +17,7 @@ import type {
   CreditCardInputValues,
 } from "./accounts.model";
 import { hasValidAmount, isValidDayOfMonth } from "./accounts.utils";
+import { transactionServices } from "@/modules/transactions/transaction.services";
 import { isUniqueName } from "@/shared/utils/utils";
 
 const accountsStore = {
@@ -58,6 +59,14 @@ export const accountsServices = {
       throw new Error(`Credit card not found: ${id}`);
     }
     return card;
+  },
+
+  // what is owed on the card now: the opening outstanding plus the spending with the card minus the bill payments (BR-FIN-002).
+  // the transactions module works out what the transactions did
+  getCreditCardOutstanding(id: string) {
+    const card = this.getCreditCardById(id);
+    const { net } = transactionServices.getCreditCardMovement(id);
+    return Math.round((card.outstandingBalance + net) * 100) / 100;
   },
 
   // validation
@@ -151,9 +160,7 @@ export const accountsServices = {
       name: input.name.trim(),
       id: id,
       type: "credit-card",
-      // these two will be derived from transactions later, for now same as outstanding
-      currentStatementAmount: input.outstandingBalance,
-      totalDueAmount: input.outstandingBalance,
+      // a new card has no transactions, so what is owed now is the opening outstanding
       status: "active",
     };
 
@@ -174,11 +181,13 @@ export const accountsServices = {
       return { success: false, error };
     }
 
+    // the form shows what is owed now, so what is typed is that. the card stores the opening outstanding, which is that
+    // without what the transactions did to the card
+    const { net } = transactionServices.getCreditCardMovement(id);
     const changes = {
       ...input,
       name: input.name.trim(),
-      currentStatementAmount: input.outstandingBalance,
-      totalDueAmount: input.outstandingBalance,
+      outstandingBalance: Math.round((input.outstandingBalance - net) * 100) / 100,
     };
     // DEXIE OFF
     // try {

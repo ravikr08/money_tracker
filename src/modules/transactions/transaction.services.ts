@@ -1,5 +1,5 @@
 import { appStore } from "@/app/app.store";
-import { parseLocalDate } from "./transactions.utils";
+import { creditCardMovement, expenseByCategory, parseLocalDate, summarizeTransactions } from "./transactions.utils";
 import * as transactionActions from "./transactions.slice";
 import type {
   Transaction,
@@ -66,6 +66,24 @@ export const transactionServices = {
       }
       return true;
     });
+  },
+
+  // income, expense and net cash flow (income − expense) of the transactions a filter gives, all of them without a filter.
+  // transfers and card payments only move money so they are not counted, archived ones neither.
+  // the other modules (the dashboard) get these numbers from here, they don't add them up again
+  getCashFlow(filter: TransactionFilter = {}) {
+    return summarizeTransactions(this.getFilteredTransactions(filter));
+  },
+
+  // what the transactions did to a credit card: spent, paid and net (spent − paid). the accounts module adds the net to the
+  // opening outstanding of the card (BR-FIN-002). a list can be given (the one in the store state, for a selector), the default is the store
+  getCreditCardMovement(cardId: string, list?: Transaction[]) {
+    return creditCardMovement(list ?? this.getAllTransactions(), cardId);
+  },
+
+  // what was spent per category (the biggest first) in the transactions a filter gives
+  getExpenseByCategory(filter: TransactionFilter = {}) {
+    return expenseByCategory(this.getFilteredTransactions(filter));
   },
 
   addTransaction(data: Omit<Transaction, "id" | "isDeleted" | "createdAt" | "updatedAt"> & { createdAt?: string }) {

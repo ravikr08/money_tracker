@@ -1,5 +1,4 @@
-import type { Transaction } from "@/modules/transactions/transaction.model";
-import { parseLocalDate, summarizeTransactions } from "@/modules/transactions/transactions.utils";
+import { transactionServices } from "@/modules/transactions/transaction.services";
 
 export type DashboardPeriod = "thisMonth" | "lastMonth" | "thisYear";
 
@@ -41,28 +40,27 @@ export function percentChange(current: number, previous: number) {
   return Math.round(((current - previous) / Math.abs(previous)) * 1000) / 10;
 }
 
-// income and expense per week (a month) or per month (the year). archived ones are left out, same as everywhere
-export function buildBuckets(list: Transaction[], period: DashboardPeriod, now = new Date()): Bucket[] {
-  const counted = list.filter((t) => !t.isDeleted && !t.isArchived && (t.type === "income" || t.type === "expense"));
-  const sum = (items: Transaction[]) => {
-    const { income, expense, net } = summarizeTransactions(items);
+// income, expense and net per week (a month) or per month (the year). the dashboard only decides where the bars start and end,
+// the numbers of each bar are given by the transaction service
+export function buildBuckets(period: DashboardPeriod, now = new Date()): Bucket[] {
+  const cashFlow = (from: Date, to: Date) => {
+    const { income, expense, net } = transactionServices.getCashFlow({ from, to });
     return { income, expense, net };
   };
 
   if (period === "thisYear") {
-    const lastMonth = now.getMonth();
-    return Array.from({ length: lastMonth + 1 }, (_, month) => {
-      const items = counted.filter((t) => parseLocalDate(t.transactionDate).getMonth() === month);
-      return {
-        key: String(month),
-        label: new Date(now.getFullYear(), month, 1).toLocaleDateString("en-GB", { month: "short" }),
-        ...sum(items),
-      };
-    });
+    const year = now.getFullYear();
+    return Array.from({ length: now.getMonth() + 1 }, (_, month) => ({
+      key: String(month),
+      label: new Date(year, month, 1).toLocaleDateString("en-GB", { month: "short" }),
+      ...cashFlow(new Date(year, month, 1), endOfDay(year, month + 1, 0)),
+    }));
   }
 
   const base = period === "lastMonth" ? new Date(now.getFullYear(), now.getMonth() - 1, 1) : new Date(now.getFullYear(), now.getMonth(), 1);
-  const daysInMonth = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
+  const year = base.getFullYear();
+  const month = base.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const lastDay = period === "thisMonth" ? Math.min(now.getDate(), daysInMonth) : daysInMonth;
   const weeks: [number, number][] = [[1, 7], [8, 14], [15, 21], [22, lastDay]];
 
@@ -70,26 +68,12 @@ export function buildBuckets(list: Transaction[], period: DashboardPeriod, now =
     .filter(([start]) => start <= lastDay)
     .map(([start, end]) => {
       const last = Math.min(end, lastDay);
-      const items = counted.filter((t) => {
-        const day = parseLocalDate(t.transactionDate).getDate();
-        return day >= start && day <= last;
-      });
-      return { key: `${start}`, label: start === last ? String(start) : `${start}–${last}`, ...sum(items) };
+      return {
+        key: `${start}`,
+        label: start === last ? String(start) : `${start}–${last}`,
+        ...cashFlow(new Date(year, month, start), endOfDay(year, month, last)),
+      };
     });
-}
-
-export type CategorySpend = { categoryId: string; amount: number };
-
-// expense per category, biggest first
-export function expenseByCategory(list: Transaction[]): CategorySpend[] {
-  const totals = new Map<string, number>();
-  for (const t of list) {
-    if (t.isDeleted || t.isArchived || t.type !== "expense") continue;
-    totals.set(t.categoryId, (totals.get(t.categoryId) ?? 0) + t.amount);
-  }
-  return [...totals.entries()]
-    .map(([categoryId, amount]) => ({ categoryId, amount: round2(amount) }))
-    .sort((a, b) => b.amount - a.amount);
 }
 
 // a round top for the chart (25k, 50k, 75k, 100k) and the lines in between. the values can be negative (cash flow)

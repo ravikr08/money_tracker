@@ -163,7 +163,8 @@ function getCreditCardDraft(payload: AccountsDialogPayload): CreditCardDraft {
     data: {
       name: card.name,
       creditLimit: String(card.creditLimit),
-      outstandingBalance: String(card.outstandingBalance),
+      // what is owed now (the opening outstanding plus what the transactions did), updateCreditCard works the opening one back out of it
+      outstandingBalance: String(accountsServices.getCreditCardOutstanding(payload.id)),
       statementDate: String(card.statementDate),
       paymentDueDate: String(card.paymentDueDate),
       color: card.color,

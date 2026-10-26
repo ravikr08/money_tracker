@@ -33,20 +33,18 @@ function Card({ title, value, caption, chip, dark, className }: CardProps) {
 }
 
 type BalanceCardsProps = {
-    totalBalance: number;
-    accountsCount: number;
     current: Totals;
     previous: Totals;
     previousLabel: string;
 }
 
 // phone: the balance, then income and expense side by side. tablet and desktop: three cards in a row
-// the total balance is the same number as on the accounts page. it has no comparison, because the balance of an account does not follow the transactions yet
-export default function BalanceCards({ totalBalance, accountsCount, current, previous, previousLabel }: BalanceCardsProps) {
+// the total balance is the net cash flow (income − expense) of the period, the same number the transaction service gives everywhere (getCashFlow)
+export default function BalanceCards({ current, previous, previousLabel }: BalanceCardsProps) {
     const vs = (previousValue: number) => previousValue === 0 && current.income + current.expense > 0 ? `No data for ${previousLabel}` : `vs ${formatCurrency(previousValue)} ${previousLabel}`;
     return (
         <section aria-label="Summary" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-4">
-            <Card dark title="Total Balance" value={formatCurrency(totalBalance)} caption={`Across ${accountsCount} active ${accountsCount === 1 ? "account" : "accounts"}`} className="col-span-2 md:col-span-1" />
+            <Card dark title="Total Balance" value={formatCurrency(current.net)} chip={<Chip change={percentChange(current.net, previous.net)} />} caption={vs(previous.net)} className="col-span-2 md:col-span-1" />
             <Card title="Income" value={formatCurrency(current.income)} chip={<Chip change={percentChange(current.income, previous.income)} />} caption={vs(previous.income)} />
             <Card title="Expense" value={formatCurrency(current.expense)} chip={<Chip change={percentChange(current.expense, previous.expense)} goodWhenUp={false} />} caption={vs(previous.expense)} />
         </section>

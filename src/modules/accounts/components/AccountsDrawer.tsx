@@ -200,7 +200,7 @@ function CreditCardDetails({ id }: { id: string }) {
 
     const isActive = card.status === "active";
     const utilization = card.creditLimit > 0 ? (outstanding / card.creditLimit) * 100 : 0;
-    const { paymentStatus, formattedDueDate } = getDueInfo(card.paymentDueDate, card.totalDueAmount);
+    const { paymentStatus, formattedDueDate } = getDueInfo(card.paymentDueDate, outstanding);
 
     return (
         <>
