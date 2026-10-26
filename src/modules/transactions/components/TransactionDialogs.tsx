@@ -81,20 +81,20 @@ const fieldClass = "w-full h-12 px-4 rounded-2xl border border-[#CBD5D2] bg-whit
 export function TransactionEditDialog() {
     return (
         <Dialog handle={TRANSACTION_EDIT_HANDLE}>
-            {({ payload }) => payload ? <EditContent id={payload.id} /> : null}
+            {({ payload }) => payload ? <EditContent id={payload.id} initialType={payload.type} /> : null}
         </Dialog>
     )
 }
 
 // no id = the "new transaction" form, the same form with empty fields
-function EditContent({ id }: { id?: string }) {
+function EditContent({ id, initialType }: { id?: string, initialType?: TransactionTypes }) {
     const transaction = useSelector(selectTransactions).find(t => t.id === id);
     if (id && !transaction) return null;
     return (
         <DialogContent showCloseButton={false} className={SHEET}>
             <Handle />
             <SheetHeader title={transaction ? "Edit Transaction" : "New Transaction"} />
-            <EditForm transaction={transaction} />
+            <EditForm transaction={transaction} initialType={initialType} />
         </DialogContent>
     )
 }
@@ -139,25 +139,27 @@ function FormSelect({ label, value, onChange, items, children, align = "start" }
     )
 }
 
-function EditForm({ transaction }: { transaction?: Transaction }) {
+function EditForm({ transaction, initialType }: { transaction?: Transaction, initialType?: TransactionTypes }) {
     const accounts = useSelector(selectSortedAccounts).filter(acc => acc.status !== "deleted");
     const cards = useSelector(selectSortedCreditCards).filter(card => card.status !== "deleted");
     const categories = useSelector((state: { categorySlice: { categories: { id: string, name: string, type: string, status: string }[] } }) => state.categorySlice.categories);
     const subcategoriesMap = useSelector((state: { categorySlice: { subcategoriesMap: Record<string, { id: string, name: string, status: string }[]> } }) => state.categorySlice.subcategoriesMap);
 
     // the draft lives here, the form starts as a copy of the transaction. the component is made new for every opening
-    // a new transaction starts as an expense from the first account, with the first expense category
-    const [type, setType] = useState<TransactionTypes>(transaction?.type ?? "expense");
+    // a new transaction starts as an expense (or the type the dashboard buttons ask for) from the first account, with the first category of that type
+    const startType = transaction?.type ?? initialType ?? "expense";
+    const startCategory = categories.find(cat => cat.status === "active" && cat.type === startType);
+    const [type, setType] = useState<TransactionTypes>(startType);
     const [amount, setAmount] = useState(transaction ? String(transaction.amount) : "");
     const [title, setTitle] = useState(transaction?.title ?? "");
-    const [categoryId, setCategoryId] = useState(transaction?.categoryId ?? categories.find(cat => cat.status === "active" && cat.type === "expense")?.id ?? "");
+    const [categoryId, setCategoryId] = useState(transaction?.categoryId ?? startCategory?.id ?? "");
     const [subCategoryId, setSubCategoryId] = useState(() => {
         if (transaction) return transaction.subCategoryId ?? "";
-        const firstExpense = categories.find(cat => cat.status === "active" && cat.type === "expense");
-        return (firstExpense ? (subcategoriesMap[firstExpense.id] ?? []).find(sub => sub.status === "active")?.id : undefined) ?? "";
+        return (startCategory ? (subcategoriesMap[startCategory.id] ?? []).find(sub => sub.status === "active")?.id : undefined) ?? "";
     });
     const [from, setFrom] = useState(transaction?.fromAccountId ?? accounts[0]?.id ?? "");
-    const [to, setTo] = useState(transaction?.toAccountId ?? accounts[0]?.id ?? "");
+    // a new transfer starts with two different accounts
+    const [to, setTo] = useState(transaction?.toAccountId ?? (startType === "transfer" ? accounts[1]?.id : undefined) ?? accounts[0]?.id ?? "");
     const [note, setNote] = useState(transaction?.note ?? "");
     // the note box is behind "Add note" until there is a note
     const [showNote, setShowNote] = useState(Boolean(transaction?.note));

@@ -1,6 +1,7 @@
 import SidebarList from "./SidebarList";
 import SidebarRail from "./SidebarRail";
 import SidebarLogo from "./SidebarLogo";
+import { SidebarUser } from "./SidebarUser";
 import { useLocation } from "react-router-dom";
 import { pages } from "./sidebar.constants";
 
@@ -15,6 +16,7 @@ function SideBar(){
                 <ul className="flex flex-col w-full gap-1">
                     {pages.map(el=><SidebarList key={el.label} {...el} isActive={path.pathname === el.path}/>)}
                 </ul>
+                <SidebarUser />
             </aside>
 
             {/* tablet (768px - 1023px) */}

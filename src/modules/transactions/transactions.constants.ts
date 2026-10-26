@@ -9,8 +9,8 @@ import type {
 // the details panel of a transaction. the payload is the id of the transaction to show
 export const TRANSACTION_DRAWER_HANDLE = Drawer.createHandle<{ id: string }>();
 // the edit form and the delete question are dialogs, they get the id of the transaction the same way.
-// the form is also the "new transaction" one: no id = a new transaction
-export const TRANSACTION_EDIT_HANDLE = Dialog.createHandle<{ id?: string }>();
+// the form is also the "new transaction" one: no id = a new transaction, `type` is the type the new form starts with
+export const TRANSACTION_EDIT_HANDLE = Dialog.createHandle<{ id?: string; type?: TransactionTypes }>();
 export const TRANSACTION_DELETE_HANDLE = Dialog.createHandle<{ id: string }>();
 
 export const VIEW_OPTIONS: { value: ViewKey; label: string }[] = [

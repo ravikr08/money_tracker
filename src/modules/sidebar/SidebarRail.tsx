@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/shared/lib/utils";
 import { pages } from "./sidebar.constants";
 import SidebarLogo from "./SidebarLogo";
+import { RailUser } from "./SidebarUser";
 
 // tablet only (md to lg): a narrow bar with the icon and the label under it
 export default function SidebarRail() {
@@ -26,6 +27,7 @@ export default function SidebarRail() {
                     ))}
                 </ul>
             </nav>
+            <RailUser />
         </aside>
     )
 }

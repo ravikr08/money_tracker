@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, Wallet, ChartNoAxesCombined, Layers, SlidersHorizontal } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, Wallet, ChartNoAxesCombined, Layers } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export type Page = {
@@ -29,8 +29,4 @@ export const pages: Page[] = [
         "path": "/category",
         "label": "Category",
         "icon": Layers
-    }, {
-        "path": "/settings",
-        "label":"Settings",
-        "icon" : SlidersHorizontal,
     }];

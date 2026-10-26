@@ -3,7 +3,6 @@ import App from "./App";
 import DashboardPage from "@/modules/dashboard/DashboardPage";
 import AccountsPage from "@/modules/accounts/AccountsPage";
 import AnalyticsPage from "@/modules/analytics/AnalyticsPage"
-import SettingsPage from "@/modules/settings/SettingsPage"
 import TransactionPage from "@/modules/transactions/TransactionsPage"
 import CategoryPage from "@/modules/category/CategoryPage";
 import { appLoader } from "./app.loader";
@@ -29,10 +28,6 @@ export const Router = createBrowserRouter([
             {
                 path: "analytics",
                 element: <AnalyticsPage/>
-            },
-            {
-                path: "settings",
-                element: <SettingsPage/>
             },
             {
                 path: "transactions",

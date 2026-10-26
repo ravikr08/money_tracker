@@ -37,6 +37,11 @@ const DUMMY: Dummy[] = [
   { type: "expense", title: "Apollo Pharmacy", amount: 960, date: "2026-10-10", time: "19:25", category: "Healthcare", from: "acc-cash" },
   { type: "expense", title: "Udemy course", amount: 1499, date: "2026-10-08", time: "21:00", category: "Education", from: "cc-hdfc-millennia" },
   { type: "expense", title: "Pet food", amount: 901, date: "2026-10-05", time: "11:30", category: "Pets", from: "acc-cash" },
+  // last month, so the dashboard has something to compare with: income 72,000 and expense 4,599
+  { type: "income", title: "Salary · Acme Corp", amount: 72000, date: "2026-09-24", time: "09:05", category: "Salary", to: "acc-hdfc-savings", note: "September salary" },
+  { type: "expense", title: "Zomato", amount: 2100, date: "2026-09-18", time: "20:10", category: "Food", subcategory: "Restaurants", from: "cc-hdfc-millennia" },
+  { type: "expense", title: "Metro card", amount: 1299, date: "2026-09-12", time: "08:30", category: "Transport", from: "acc-phonepe" },
+  { type: "expense", title: "Clothes", amount: 1200, date: "2026-09-06", time: "17:45", category: "Shopping", from: "cc-amazon-pay" },
 ];
 
 export const transactions: Transaction[] = DUMMY.map((d, i) => {

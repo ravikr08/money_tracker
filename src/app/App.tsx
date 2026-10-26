@@ -4,12 +4,12 @@ import SideBar from '@/modules/sidebar/SideBar'
 import BottomNav from '@/modules/sidebar/BottomNav'
 import Header from '@/shared/components/Header'
 function App() {
-  // the transactions page has its own green look, the menu and avatar follow it
+  // the transactions page and the dashboard have their own green look, the menu and avatar follow it
   const { pathname } = useLocation()
   // phone: header on top, only the page content scrolls, bottom nav below
   // md and up: the whole main area scrolls like before
   return (
-    <div className={'flex flex-col md:flex-row h-dvh' + (pathname === '/transactions' ? ' theme-green' : '')}>
+    <div className={'flex flex-col md:flex-row h-dvh' + (pathname === '/transactions' || pathname === '/' ? ' theme-green' : '')}>
       <SideBar />
       <main className='bg-bg w-full min-w-0 flex-1 min-h-0 px-4 pt-4 sm:px-6 md:px-8 md:py-6 lg:py-10 xl:px-[60px] overflow-hidden md:overflow-y-auto flex flex-col gap-4 sm:gap-8 lg:gap-6'>
         <Header />

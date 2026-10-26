@@ -2,13 +2,11 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/shared/lib/utils";
 import { pages } from "./sidebar.constants";
 
-// phone only (below md). settings is not in the design, it opens from the avatar in the header
-const bottomPages = pages.filter(page => page.path !== "/settings");
-
+// phone only (below md)
 export default function BottomNav() {
     return (
         <nav aria-label="Main" className="md:hidden shrink-0 flex gap-0.5 px-2 pt-2 pb-2 bg-white border-t border-[#E6E9F4]">
-            {bottomPages.map(({ path, label, icon: Icon }) => (
+            {pages.map(({ path, label, icon: Icon }) => (
                 <NavLink
                     key={path}
                     to={path}

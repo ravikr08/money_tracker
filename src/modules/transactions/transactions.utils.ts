@@ -103,6 +103,16 @@ export type TransactionGroupData = {
   rows: Transaction[];
 };
 
+// newest first: by date, and by the time it was created for the same day. gives a new array
+export function sortNewestFirst(list: Transaction[]) {
+  return [...list].sort(
+    (a, b) =>
+      parseLocalDate(b.transactionDate).getTime() -
+        parseLocalDate(a.transactionDate).getTime() ||
+      b.createdAt.localeCompare(a.createdAt),
+  );
+}
+
 // newest first, then grouped by day / week (starting Monday) / month depending on the view
 // the calendar view has no grouping yet, so it shows days
 export function groupTransactions(
@@ -110,12 +120,7 @@ export function groupTransactions(
   view: ViewKey,
   now = new Date(),
 ): TransactionGroupData[] {
-  const sorted = [...list].sort(
-    (a, b) =>
-      parseLocalDate(b.transactionDate).getTime() -
-        parseLocalDate(a.transactionDate).getTime() ||
-      b.createdAt.localeCompare(a.createdAt),
-  );
+  const sorted = sortNewestFirst(list);
 
   const today = dateKey(now);
   const yesterday = dateKey(
