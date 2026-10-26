@@ -23,7 +23,7 @@ function limitGroups(groups: TransactionGroupData[], limit: number) {
 function LoadMoreButton({ remaining, onClick }: { remaining: number, onClick: () => void }) {
     if (remaining <= 0) return null;
     return (
-        <button type="button" onClick={onClick} className="h-12 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] bg-white text-sm font-semibold text-[#11201E] cursor-pointer">
+        <button type="button" onClick={onClick} className="h-12 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] bg-white type-body font-semibold text-[#11201E] cursor-pointer">
             Load more <span className="font-medium text-[#5A6B68]">· {remaining} more</span>
         </button>
     )
@@ -32,9 +32,9 @@ function LoadMoreButton({ remaining, onClick }: { remaining: number, onClick: ()
 function EmptyState() {
     return (
         <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
-            <b className="text-base text-[#11201E]">No transactions found</b>
-            <span className="text-sm text-[#5A6B68]">Nothing matches the filters you picked.</span>
-            <button type="button" onClick={() => transactionServices.resetFilters()} className="h-11 px-5 rounded-full border border-[#CBD5D2] bg-white text-sm font-semibold text-[#11201E] cursor-pointer">Reset filters</button>
+            <b className="type-item-title text-[#11201E]">No transactions found</b>
+            <span className="type-label text-[#5A6B68]">Nothing matches the filters you picked.</span>
+            <button type="button" onClick={() => transactionServices.resetFilters()} className="h-11 px-5 rounded-full border border-[#CBD5D2] bg-white type-body font-semibold text-[#11201E] cursor-pointer">Reset filters</button>
         </div>
     )
 }
@@ -61,7 +61,7 @@ export default function TransactionList(){
     return(
         <section className="flex flex-col gap-4 md:gap-0 md:rounded-3xl md:bg-white md:overflow-x-auto">
             <div className="flex flex-col gap-4 md:gap-0 xl:min-w-[960px]">
-                <div role="row" className={`hidden xl:grid ${ROW_COLUMNS} pt-4 pr-3 pb-3 pl-5 text-xs font-semibold tracking-[0.05em] text-[#5A6B68]`}>
+                <div role="row" className={`hidden xl:grid ${ROW_COLUMNS} pt-4 pr-3 pb-3 pl-5 type-caption font-semibold tracking-[0.05em] text-[#5A6B68]`}>
                     <span></span>
                     <span>TRANSACTION</span>
                     <span>CATEGORY</span>
@@ -80,12 +80,12 @@ export default function TransactionList(){
                     {/* tablet */}
                     <div className="hidden md:flex xl:hidden flex-col gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
                         <LoadMoreButton remaining={remaining} onClick={loadMore} />
-                        <span className="text-center text-[13px] text-[#5A6B68]">Showing {shown} of {total}</span>
+                        <span className="text-center type-label text-[#5A6B68]">Showing {shown} of {total}</span>
                     </div>
 
                     {/* desktop */}
                     <div className="hidden xl:flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
-                        <span className="text-[13px] text-[#5A6B68]">Showing {shown} of {total}</span>
+                        <span className="type-label text-[#5A6B68]">Showing {shown} of {total}</span>
                         <div className="w-60"><LoadMoreButton remaining={remaining} onClick={loadMore} /></div>
                     </div>
                 </>}

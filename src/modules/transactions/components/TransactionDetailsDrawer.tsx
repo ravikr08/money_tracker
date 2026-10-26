@@ -59,7 +59,7 @@ function Details({ id }: { id: string }) {
     return (
         <>
             <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-4">
-                <DrawerTitle className="text-[20px] leading-7 font-semibold text-[#11201E]">Transaction details</DrawerTitle>
+                <DrawerTitle className="type-section-title font-semibold text-[#11201E]">Transaction details</DrawerTitle>
                 <DrawerClose render={<button aria-label="Close" className="size-10 -mr-2 -mt-1 grid place-items-center rounded-full text-[#11201E] cursor-pointer hover:bg-[#EEF3F1]"><X size={20} strokeWidth={1.8} /></button>} />
             </div>
 
@@ -68,16 +68,16 @@ function Details({ id }: { id: string }) {
                     <div className="flex items-center gap-3">
                         <span className={cn("size-12 shrink-0 grid place-items-center rounded-2xl", kind.tile)}><Icon size={22} strokeWidth={2} /></span>
                         <span className="min-w-0 flex flex-col items-start gap-1">
-                            <span className="text-base font-semibold text-[#11201E] truncate max-w-full">{transaction.title ?? categoryName}</span>
-                            <span className={cn("px-2.5 py-0.5 rounded-full text-[11px] font-semibold", kind.tile)}>{kind.label}</span>
+                            <span className="type-item-title font-semibold text-[#11201E] truncate max-w-full">{transaction.title ?? categoryName}</span>
+                            <span className={cn("px-2.5 py-0.5 rounded-full type-micro font-semibold", kind.tile)}>{kind.label}</span>
                         </span>
                     </div>
-                    <p className={cn("mt-3 text-4xl font-bold tracking-tight break-all", kind.amount)}>{formatAmount(transaction)}</p>
+                    <p className={cn("mt-3 type-display font-bold tracking-tight break-all", kind.amount)}>{formatAmount(transaction)}</p>
                 </div>
 
                 <ul className="rounded-[20px] border border-[#E1E8E6] overflow-hidden">
                     {rows.map(row => (
-                        <li key={row.label} className="flex justify-between gap-4 px-4 py-3.5 text-sm border-b border-[#EEF2F0] last:border-b-0">
+                        <li key={row.label} className="flex justify-between gap-4 px-4 py-3.5 type-body border-b border-[#EEF2F0] last:border-b-0">
                             <span className="text-[#5A6B68]">{row.label}</span>
                             <span className="font-semibold text-[#11201E] text-right">{row.value}</span>
                         </li>
@@ -85,20 +85,20 @@ function Details({ id }: { id: string }) {
                 </ul>
 
                 <section>
-                    <h4 className="text-sm text-[#5A6B68] mb-2">Notes</h4>
+                    <h4 className="type-body text-[#5A6B68] mb-2">Notes</h4>
                     {transaction.note
-                        ? <p className="rounded-2xl bg-[#F1F4F3] px-4 py-3.5 text-sm text-[#11201E]">{transaction.note}</p>
-                        : <p className="text-sm text-[#7B8A87]">No notes added.</p>}
+                        ? <p className="rounded-2xl bg-[#F1F4F3] px-4 py-3.5 type-body text-[#11201E]">{transaction.note}</p>
+                        : <p className="type-body text-[#7B8A87]">No notes added.</p>}
                 </section>
             </div>
 
             {/* Edit and Delete open their dialogs (the panel closes first), Archive/Restore switches the state and the panel stays open */}
             <div className="shrink-0 flex gap-3 px-5 pt-3 pb-5 max-md:border-t max-md:border-[#EEF2F0]">
-                <button type="button" onClick={() => { TRANSACTION_DRAWER_HANDLE.close(); TRANSACTION_EDIT_HANDLE.openWithPayload({ id }); }} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] text-sm font-semibold text-[#11201E] cursor-pointer"><Pencil size={16} /> Edit</button>
-                <button type="button" onClick={() => isArchived ? transactionServices.restoreTransaction(id) : transactionServices.archiveTransaction(id)} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] text-sm font-semibold text-[#11201E] cursor-pointer">
+                <button type="button" onClick={() => { TRANSACTION_DRAWER_HANDLE.close(); TRANSACTION_EDIT_HANDLE.openWithPayload({ id }); }} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] type-body font-semibold text-[#11201E] cursor-pointer"><Pencil size={16} /> Edit</button>
+                <button type="button" onClick={() => isArchived ? transactionServices.restoreTransaction(id) : transactionServices.archiveTransaction(id)} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] type-body font-semibold text-[#11201E] cursor-pointer">
                     {isArchived ? <><RotateCcw size={16} /> Restore</> : <><Archive size={16} /> Archive</>}
                 </button>
-                <button type="button" onClick={() => { TRANSACTION_DRAWER_HANDLE.close(); TRANSACTION_DELETE_HANDLE.openWithPayload({ id }); }} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full bg-[#FFE4E4] text-sm font-semibold text-[#B42318] cursor-pointer"><Trash2 size={16} /> Delete</button>
+                <button type="button" onClick={() => { TRANSACTION_DRAWER_HANDLE.close(); TRANSACTION_DELETE_HANDLE.openWithPayload({ id }); }} className="h-12 flex-1 flex items-center justify-center gap-2 rounded-full bg-[#FFE4E4] type-body font-semibold text-[#B42318] cursor-pointer"><Trash2 size={16} /> Delete</button>
             </div>
         </>
     )

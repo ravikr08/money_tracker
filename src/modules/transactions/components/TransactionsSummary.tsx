@@ -21,11 +21,11 @@ function SummaryCard({ title, value, caption, icon: Icon, iconClass, valueClass,
     return (
         <div className={cn("flex flex-col gap-2 px-[18px] py-4 xl:px-6 xl:py-5 rounded-[22px] xl:rounded-3xl", dark ? "bg-[#0B1F1C] text-white" : "bg-white")}>
             <div className="flex items-center justify-between gap-2">
-                <span className={cn("text-sm font-medium", dark ? "text-white/80" : "text-[#5A6B68]")}>{title}</span>
+                <span className={cn("type-body font-medium", dark ? "text-white/80" : "text-[#5A6B68]")}>{title}</span>
                 <span className={cn("size-[34px] shrink-0 grid place-items-center rounded-full", iconClass)}><Icon size={16} strokeWidth={2} /></span>
             </div>
-            <b className={cn("text-2xl leading-[30px] xl:text-[32px] xl:leading-[38px] font-bold tracking-tight whitespace-nowrap", valueClass)}>{value}</b>
-            <span className={cn("text-[13px]", dark ? "text-white/70" : "text-[#5A6B68]")}>{caption}</span>
+            <b className={cn("type-stat font-bold tracking-tight whitespace-nowrap", valueClass)}>{value}</b>
+            <span className={cn("type-label", dark ? "text-white/70" : "text-[#5A6B68]")}>{caption}</span>
         </div>
     )
 }
@@ -46,23 +46,23 @@ export default function TransactionsSummary() {
             <section aria-label="Summary" className="md:hidden flex flex-col gap-2.5 px-[18px] py-4 rounded-[22px] bg-[#0B1F1C] text-white">
                 <div className="flex items-end justify-between gap-3">
                     <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold tracking-[0.06em] text-white/70">NET CASH FLOW</span>
-                        <b className="text-[30px] leading-9 font-bold tracking-tight">{s.net.value}</b>
+                        <span className="type-micro font-semibold tracking-[0.06em] text-white/70">NET CASH FLOW</span>
+                        <b className="type-display font-bold tracking-tight">{s.net.value}</b>
                     </div>
-                    <span className="text-xs text-white/70 text-right">{range}</span>
+                    <span className="type-caption text-white/70 text-right">{range}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                     <div className="flex flex-col gap-0.5 px-3 py-2.5 rounded-[14px] bg-white/8">
-                        <span className="text-[11px] text-white/70">Income</span>
-                        <b className="text-sm text-[#6EE7C0]">{s.income.value}</b>
+                        <span className="type-micro text-white/70">Income</span>
+                        <b className="type-body text-[#6EE7C0]">{s.income.value}</b>
                     </div>
                     <div className="flex flex-col gap-0.5 px-3 py-2.5 rounded-[14px] bg-white/8">
-                        <span className="text-[11px] text-white/70">Expense</span>
-                        <b className="text-sm text-[#FFB48F]">{s.expense.value}</b>
+                        <span className="type-micro text-white/70">Expense</span>
+                        <b className="type-body text-[#FFB48F]">{s.expense.value}</b>
                     </div>
                     <div className="flex flex-col gap-0.5 px-3 py-2.5 rounded-[14px] bg-white/8">
-                        <span className="text-[11px] text-white/70">Transactions</span>
-                        <b className="text-sm">{s.count.value}</b>
+                        <span className="type-micro text-white/70">Transactions</span>
+                        <b className="type-body">{s.count.value}</b>
                     </div>
                 </div>
             </section>

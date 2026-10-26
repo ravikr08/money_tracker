@@ -34,8 +34,8 @@ export default function Header() {
         // phone: title and icons in one row, subtitle below
         // tablet and desktop: title and subtitle on the left, icons on the right
         <header className="w-full grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5">
-            <h1 className="text-[26px] leading-8 tracking-tight md:text-2xl md:leading-normal md:tracking-normal font-bold min-w-0 col-start-1">{title}</h1>
-            <p className="text-slate text-sm leading-5 md:leading-normal col-[1/-1] md:col-[1] md:max-w-[340px] lg:max-w-none">
+            <h1 className="type-page-title font-bold min-w-0 col-start-1">{title}</h1>
+            <p className="type-body text-slate col-[1/-1] md:col-[1] md:max-w-[340px] lg:max-w-none">
                 {subtitle}
             </p>
             <div className="flex items-center gap-2 shrink-0 col-start-2 row-start-1 md:row-span-2">
@@ -46,12 +46,12 @@ export default function Header() {
                     <Bell className="size-5 md:size-[18px]" />
                 </span>
                 <Link to="/settings" className="flex items-center gap-2 md:bg-white md:pl-2 md:pr-5 md:py-1.5 rounded-full cursor-pointer">
-                    <span className="bg-(--avatar-bg) md:bg-(--avatar-bg-md) size-11 md:size-10 flex items-center justify-center rounded-full text-white font-semibold md:font-bold ">
+                    <span className="bg-(--avatar-bg) md:bg-(--avatar-bg-md) size-11 md:size-10 flex items-center justify-center rounded-full type-body text-white font-semibold md:font-bold ">
                         M
                     </span>
                     <div className="hidden md:flex flex-col">
-                        <h3 className="font-bold text-sm">Madan Gowda</h3>
-                        <p className="hidden lg:block text-sm text-slate">
+                        <h3 className="font-bold type-body">Madan Gowda</h3>
+                        <p className="hidden lg:block type-body text-slate">
                             madangowda@gmail.com
                         </p>
                     </div>

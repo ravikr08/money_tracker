@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { List, Plus, Search } from "lucide-react";
+import { List, Plus, Search, X } from "lucide-react";
 import type { FilterOption } from "../transactions.placeholder";
 import { DEFAULT_TRANSACTION_FILTERS, TRANSACTION_EDIT_HANDLE, PERIOD_OPTIONS, TYPE_OPTIONS, VIEW_OPTIONS } from "../transactions.constants";
 import { selectPeriodRangeLabel, selectTransactionFilters } from "../transactions.selectors";
@@ -42,19 +42,23 @@ export default function TransactionsToolbar() {
         setFilters(view === "calendar" ? { ...DEFAULT_TRANSACTION_FILTERS, search: filters.search, view } : { view });
     }
 
+    // the search and the view are not filters of the buttons, so "Clear filters" leaves them as they are
+    const { search, view, ...defaultButtonFilters } = DEFAULT_TRANSACTION_FILTERS;
+    const hasActiveFilters = (Object.keys(defaultButtonFilters) as (keyof typeof defaultButtonFilters)[]).some(key => filters[key] !== defaultButtonFilters[key]);
+
     return (
         <>
             <div className="flex flex-wrap items-center gap-2 md:gap-3 xl:gap-2.5">
-                <label className="order-1 flex-1 basis-[200px] xl:basis-[300px] min-w-0 h-12 flex items-center gap-2.5 px-4 rounded-full bg-white text-[#5A6B68]">
+                <label className="order-1 flex-1 basis-[100px] md:basis-[200px] xl:basis-[300px] min-w-0 h-12 flex items-center gap-2.5 px-4 rounded-full bg-white text-[#5A6B68]">
                     <Search size={18} className="shrink-0" />
-                    <input type="search" value={filters.search} onChange={e => setFilters({ search: e.target.value })} placeholder="Search by title or notes" aria-label="Search transactions" className="flex-1 min-w-0 border-0 outline-0 bg-transparent text-sm text-[#11201E]" />
+                    <input type="search" value={filters.search} onChange={e => setFilters({ search: e.target.value })} placeholder="Search by title or notes" aria-label="Search transactions" className="flex-1 min-w-0 border-0 outline-0 bg-transparent type-body text-[#11201E]" />
                 </label>
 
-                <div className="order-2">
-                    <FilterDropdown label={labelOf(VIEW_OPTIONS, filters.view)} options={VIEW_OPTIONS} selected={filters.view} onSelect={handleViewSelect} align="end" buttonClass="h-12 text-sm" before={<List size={18} />} />
+                <div className="order-2 shrink-0">
+                    <FilterDropdown label={labelOf(VIEW_OPTIONS, filters.view)} options={VIEW_OPTIONS} selected={filters.view} onSelect={handleViewSelect} align="end" buttonClass="h-12" before={<List size={18} />} />
                 </div>
 
-                <button type="button" onClick={() => TRANSACTION_EDIT_HANDLE.openWithPayload({})} className="order-3 xl:order-4 hidden md:flex h-12 items-center gap-2 px-5 rounded-full bg-[#0E7C6B] hover:bg-[#0A6B5C] text-white text-sm font-semibold whitespace-nowrap cursor-pointer">
+                <button type="button" onClick={() => TRANSACTION_EDIT_HANDLE.openWithPayload({})} className="order-3 xl:order-4 hidden md:flex h-12 items-center gap-2 px-5 rounded-full bg-[#0E7C6B] hover:bg-[#0A6B5C] text-white type-body font-semibold whitespace-nowrap cursor-pointer">
                     <Plus size={18} strokeWidth={2.2} />
                     New Transaction
                 </button>
@@ -66,10 +70,16 @@ export default function TransactionsToolbar() {
                     <div className="xl:order-3"><FilterDropdown label={labelOf(accountOptions, filters.accountId) || "Account"} options={accountOptions} selected={filters.accountId} onSelect={o => setFilters({ accountId: o.value ?? "all" })} align="end" /></div>
                     <div className="xl:order-3"><FilterDropdown label={labelOf(categoryOptions, filters.categoryId) || "Category"} options={categoryOptions} selected={filters.categoryId} onSelect={o => setFilters({ categoryId: o.value ?? "all" })} /></div>
                     <div className="xl:order-3"><AmountFilter /></div>
+                    {hasActiveFilters && (
+                        <button type="button" onClick={() => setFilters(defaultButtonFilters)} className="xl:order-3 h-11 flex items-center gap-1.5 px-3.5 rounded-full border border-[#CBD5D2] type-label font-semibold text-[#0E7C6B] whitespace-nowrap cursor-pointer hover:bg-white">
+                            <X size={15} strokeWidth={2.2} />
+                            Clear filters
+                        </button>
+                    )}
                 </div>}
             </div>
 
-            <span className="hidden md:block text-[13px] text-[#5A6B68]">{range}</span>
+            <span className="hidden md:block type-label text-[#5A6B68]">{range}</span>
         </>
     )
 }

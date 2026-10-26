@@ -1,17 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Check, X } from "lucide-react";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog"
-import { Button } from "@/shared/components/ui/button"
-import { Field, FieldGroup } from "@/shared/components/ui/field"
-import { Input } from "@/shared/components/ui/input"
-import { Label } from "@/shared/components/ui/label"
 import { cn } from "@/shared/lib/utils";
 import {
   ACCOUNTS_DIALOG_HANLDE,
@@ -30,9 +24,16 @@ import type {
 
 type Result = { success: boolean, error?: string, message?: string }
 
-const inputClass = "rounded-sm shadow-none ring-0 focus-visible:ring-0 px-3 py-5";
-// scrolls if the screen is really small, but without the ugly scrollbar
-const contentClass = "px-4 py-5 sm:px-7 sm:py-6 sm:max-w-lg max-h-[90dvh] overflow-y-auto [scrollbar-width:none]! [&::-webkit-scrollbar]:hidden";
+// phone: a sheet from the bottom with a small handle. tablet and desktop: a box in the middle (same as the dialogs of the transactions)
+const SHEET = "gap-0 rounded-[28px] bg-white p-0 sm:max-w-[480px] max-h-[90dvh] overflow-hidden flex flex-col max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:translate-x-0 max-md:translate-y-0 max-md:max-w-full max-md:sm:max-w-full max-md:rounded-b-none";
+// the form scrolls if the screen is really small, but without the ugly scrollbar
+const BODY = "flex-1 min-h-0 overflow-y-auto px-6 pb-5 flex flex-col gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+const labelClass = "type-label font-semibold text-[#586079]";
+const fieldClass = "h-12 w-full min-w-0 rounded-xl border border-[#E2E6F3] bg-white px-4 type-item-title text-[#1B2240] outline-0 placeholder:text-[#9AA1B8] focus-within:border-[#3347E0]";
+const saveClass = "h-12 w-full rounded-full bg-[#3347E0] hover:bg-[#2A3BC4] type-body font-semibold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+
+// the sheet shows the short names of the account types
+const TYPE_LABELS: Record<string, string> = { "bank": "Bank", "cash": "Cash", "digital-wallet": "Digital wallet" };
 
 export function AccountsDialogBox() {
   return (
@@ -96,58 +97,55 @@ function AccountDialogContent({ payload }: { payload: AccountsDialogPayload }) {
   }
 
   return (
-    <DialogContent className={contentClass}>
-      <DialogHeader>
-        <DialogTitle>{payload.mode === "edit" ? "Edit Account" : "New Account"}</DialogTitle>
-        <DialogDescription>Accounts are the places where your money is kept.</DialogDescription>
-      </DialogHeader>
-      <FieldGroup>
-        <Field>
-          <Label className="text-slate">Account Type</Label>
+    <DialogContent showCloseButton={false} className={SHEET}>
+      <Handle />
+      <SheetHeader title={payload.mode === "edit" ? "Edit Account" : "New Account"} />
+      <div className={BODY}>
+        <FormField label="Type">
           <ul className="grid grid-cols-3 gap-2">
-            {ACCOUNT_TYPE_OPTIONS.map(option => (
-              <li
-                key={option.value}
-                className={cn("h-20 rounded-md cursor-pointer text-center leading-[1.2] p-1.5 bg-blue-soft flex flex-col items-center justify-center gap-1", draft.data.type === option.value && "border border-blue-500")}
-                onClick={() => handleFieldValueChange("type", option.value)}
-              >
-                <option.icon className="size-6" strokeWidth={1.8} />
-                <span className="text-[12px]">{option.label}</span>
-              </li>
-            ))}
+            {ACCOUNT_TYPE_OPTIONS.map(option => {
+              const isSelected = draft.data.type === option.value;
+              return (
+                <li key={option.value}>
+                  <button
+                    type="button"
+                    onClick={() => handleFieldValueChange("type", option.value)}
+                    className={cn(
+                      "w-full h-[68px] rounded-md border flex flex-col items-center justify-center gap-1.5 type-caption font-semibold cursor-pointer",
+                      isSelected ? "border-[#3347E0] bg-[#EEF0FF] text-[#3347E0]" : "border-transparent bg-[#F1F3FB] text-[#586079]"
+                    )}
+                  >
+                    <option.icon className="size-5" strokeWidth={1.8} />
+                    {TYPE_LABELS[option.value] ?? option.label}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
-        </Field>
+        </FormField>
 
-        <Field>
-          <Label className="text-slate">Account Name</Label>
-          <Input
+        <FormField label="Name">
+          <input
             name="name"
             placeholder="e.g. HDFC Savings"
-            className={inputClass}
+            className={fieldClass}
             value={draft.data.name}
             onChange={(e) => handleFieldValueChange("name", e.target.value)}
           />
-          {draft.res?.error && <span className="text-red-500 text-right rounded-sm">{draft.res.error}</span>}
-        </Field>
+          {draft.res?.error && <span className="type-body text-[#D92D20] text-right">{draft.res.error}</span>}
+        </FormField>
 
-        <Field>
-          <Label className="text-slate">Opening Balance</Label>
-          <Input
-            type="number"
-            name="openingBalance"
-            placeholder="0"
-            className={inputClass}
-            value={draft.data.openingBalance}
-            onChange={(e) => handleFieldValueChange("openingBalance", e.target.value)}
-          />
-        </Field>
+        <FormField label="Opening balance">
+          <MoneyInput name="openingBalance" value={draft.data.openingBalance} onChange={(value) => handleFieldValueChange("openingBalance", value)} />
+        </FormField>
 
         <ColorField colors={AVAILABLE_ACCOUNT_COLORS} selected={draft.data.color} onSelect={(color) => handleFieldValueChange("color", color)} />
-      </FieldGroup>
-      <DialogFooter className="bg-white">
-        <DialogClose render={<Button variant="outline" className="px-5 py-5">Cancel</Button>} />
-        <Button className="px-5 py-5" onClick={handleSave} disabled={draft.data.name.trim() === ""}>Save Changes</Button>
-      </DialogFooter>
+      </div>
+      <div className="shrink-0 px-6 py-4 border-t border-[#EEF2F0]">
+        <button type="button" className={saveClass} onClick={handleSave} disabled={draft.data.name.trim() === ""}>
+          {payload.mode === "edit" ? "Save changes" : "Add account"}
+        </button>
+      </div>
     </DialogContent>
   )
 }
@@ -207,108 +205,123 @@ function CreditCardDialogContent({ payload }: { payload: AccountsDialogPayload }
   }
 
   return (
-    <DialogContent className={contentClass}>
-      <DialogHeader>
-        <DialogTitle>{payload.mode === "edit" ? "Edit Credit Card" : "New Credit Card"}</DialogTitle>
-        <DialogDescription>A credit card is borrowed money, what you owe is its outstanding balance.</DialogDescription>
-      </DialogHeader>
-      <FieldGroup>
-        <Field>
-          <Label className="text-slate">Card Name</Label>
-          <Input
+    <DialogContent showCloseButton={false} className={SHEET}>
+      <Handle />
+      <SheetHeader title={payload.mode === "edit" ? "Edit Credit Card" : "New Credit Card"} />
+      <div className={BODY}>
+        <FormField label="Name">
+          <input
             name="name"
             placeholder="e.g. HDFC Millennia"
-            className={inputClass}
+            className={fieldClass}
             value={draft.data.name}
             onChange={(e) => handleFieldValueChange("name", e.target.value)}
           />
-          {draft.res?.error && <span className="text-red-500 text-right rounded-sm">{draft.res.error}</span>}
-        </Field>
+          {draft.res?.error && <span className="type-body text-[#D92D20] text-right">{draft.res.error}</span>}
+        </FormField>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field>
-            <Label className="text-slate">Credit Limit</Label>
-            <Input
-              type="number"
-              name="creditLimit"
-              placeholder="0"
-              className={inputClass}
-              value={draft.data.creditLimit}
-              onChange={(e) => handleFieldValueChange("creditLimit", e.target.value)}
-            />
-          </Field>
-          <Field>
-            <Label className="text-slate">Outstanding Balance</Label>
-            <Input
-              type="number"
-              name="outstandingBalance"
-              placeholder="0"
-              className={inputClass}
-              value={draft.data.outstandingBalance}
-              onChange={(e) => handleFieldValueChange("outstandingBalance", e.target.value)}
-            />
-          </Field>
+          <FormField label="Credit limit">
+            <MoneyInput name="creditLimit" value={draft.data.creditLimit} onChange={(value) => handleFieldValueChange("creditLimit", value)} />
+          </FormField>
+          <FormField label="Outstanding">
+            <MoneyInput name="outstandingBalance" value={draft.data.outstandingBalance} onChange={(value) => handleFieldValueChange("outstandingBalance", value)} />
+          </FormField>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field>
-            <Label className="text-slate">Statement Day</Label>
-            <Input
+          <FormField label="Statement day">
+            <input
               type="number"
               name="statementDate"
               min={1}
               max={31}
-              className={inputClass}
+              className={fieldClass}
               value={draft.data.statementDate}
               onChange={(e) => handleFieldValueChange("statementDate", e.target.value)}
             />
-          </Field>
-          <Field>
-            <Label className="text-slate">Payment Due Day</Label>
-            <Input
+          </FormField>
+          <FormField label="Payment due day">
+            <input
               type="number"
               name="paymentDueDate"
               min={1}
               max={31}
-              className={inputClass}
+              className={fieldClass}
               value={draft.data.paymentDueDate}
               onChange={(e) => handleFieldValueChange("paymentDueDate", e.target.value)}
             />
-          </Field>
+          </FormField>
         </div>
 
         <ColorField colors={AVAILABLE_CREDIT_CARD_COLORS} selected={draft.data.color} onSelect={(color) => handleFieldValueChange("color", color)} />
-      </FieldGroup>
-      <DialogFooter className="bg-white">
-        <DialogClose render={<Button variant="outline" className="px-5 py-5">Cancel</Button>} />
-        <Button className="px-5 py-5" onClick={handleSave} disabled={draft.data.name.trim() === ""}>Save Changes</Button>
-      </DialogFooter>
+      </div>
+      <div className="shrink-0 px-6 py-4 border-t border-[#EEF2F0]">
+        <button type="button" className={saveClass} onClick={handleSave} disabled={draft.data.name.trim() === ""}>
+          {payload.mode === "edit" ? "Save changes" : "Add credit card"}
+        </button>
+      </div>
     </DialogContent>
   )
 }
 
 // ---------- shared ----------
 
+function Handle() {
+  return <span className="md:hidden mx-auto mt-2 h-1 w-10 rounded-full bg-[#D5DAEE]"></span>
+}
+
+function SheetHeader({ title }: { title: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 px-6 pt-5 pb-4">
+      <DialogTitle className="type-section-title font-semibold text-[#1B2240]">{title}</DialogTitle>
+      <DialogClose render={<button aria-label="Close" className="size-10 -mr-2 -mt-1 grid place-items-center rounded-full text-[#1B2240] cursor-pointer hover:bg-[#EEF0FF]"><X size={20} strokeWidth={1.8} /></button>} />
+    </div>
+  )
+}
+
+function FormField({ label, children }: { label: string, children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5 min-w-0">
+      <span className={labelClass}>{label}</span>
+      {children}
+    </div>
+  )
+}
+
+function MoneyInput({ name, value, onChange }: { name: string, value: string, onChange: (value: string) => void }) {
+  return (
+    <label className={cn(fieldClass, "flex items-center gap-2 py-0")}>
+      <span className="text-[#586079]">₹</span>
+      <input
+        type="number"
+        name={name}
+        placeholder="0"
+        className="flex-1 min-w-0 border-0 outline-0 bg-transparent type-item-title text-[#1B2240] placeholder:text-[#9AA1B8]"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </label>
+  )
+}
+
 function ColorField({ colors, selected, onSelect }: { colors: string[], selected: string, onSelect: (color: string) => void }) {
   return (
-    <Field>
-      <Label className="text-slate">Colour</Label>
-      <div className="flex gap-2 sm:gap-2.5 flex-wrap">
+    <FormField label="Colour">
+      <div className="flex gap-3 flex-wrap p-1">
         {colors.map((color) => (
           <button
             key={color}
             type="button"
-            className={cn(
-              "flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-sm text-white cursor-pointer",
-              selected === color && "border-2 border-black",
-            )}
-            style={{ background: color }}
+            aria-label={color}
+            className="size-8 grid place-items-center rounded-full text-white cursor-pointer"
+            style={{ background: color, boxShadow: selected === color ? `0 0 0 2px #fff, 0 0 0 4px ${color}` : undefined }}
             onClick={() => onSelect(color)}
           >
-            {selected === color && "✓"}
+            {selected === color && <Check size={16} strokeWidth={3} />}
           </button>
         ))}
       </div>
-    </Field>
+    </FormField>
   )
 }

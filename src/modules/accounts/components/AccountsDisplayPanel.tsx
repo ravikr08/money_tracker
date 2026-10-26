@@ -9,7 +9,7 @@ export default function AccountsDisplayPanel({ status }: { status: AccountsStatu
 
     return (
         <div className="flex flex-col gap-3">
-            <h1 className="text-lg font-bold">Accounts</h1>
+            <h1 className="type-section-title font-bold">Accounts</h1>
             {accounts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {accounts.map(acc => (

@@ -26,7 +26,7 @@ export function FilterDropdown({ label, options, selected, onSelect, before, but
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-                className={cn("h-11 flex items-center gap-2 px-3.5 rounded-full bg-white text-[13px] font-semibold text-[#11201E] whitespace-nowrap cursor-pointer", buttonClass)}
+                className={cn("h-11 flex items-center gap-2 px-3.5 rounded-full bg-white type-label font-semibold text-[#11201E] whitespace-nowrap cursor-pointer", buttonClass)}
                 aria-label={label}
             >
                 {before}
@@ -41,11 +41,11 @@ export function FilterDropdown({ label, options, selected, onSelect, before, but
                         <DropdownMenuItem
                             key={key}
                             onClick={() => onSelect?.(option)}
-                            className={cn("min-h-11 flex items-center justify-between gap-3 px-3 py-1.5 rounded-[10px] text-sm cursor-pointer", isSelected ? "bg-[#DDF3EE] text-[#0A5F52] font-semibold" : "text-[#3C4C49] font-medium")}
+                            className={cn("min-h-11 flex items-center justify-between gap-3 px-3 py-1.5 rounded-[10px] type-body cursor-pointer", isSelected ? "bg-[#DDF3EE] text-[#0A5F52] font-semibold" : "text-[#3C4C49] font-medium")}
                         >
                             <span className="flex flex-col gap-px min-w-0">
                                 <span>{option.label}</span>
-                                {option.sub && <span className="text-[11px] font-medium text-[#5A6B68]">{option.sub}</span>}
+                                {option.sub && <span className="type-micro font-medium text-[#5A6B68]">{option.sub}</span>}
                             </span>
                             {isSelected && <Check size={16} className="shrink-0" />}
                         </DropdownMenuItem>
@@ -78,25 +78,25 @@ export function AmountFilter() {
 
     return (
         <Popover.Root onOpenChange={handleOpenChange}>
-            <Popover.Trigger className="h-11 flex items-center gap-2 px-3.5 rounded-full bg-white text-[13px] font-semibold text-[#11201E] whitespace-nowrap cursor-pointer">
+            <Popover.Trigger className="h-11 flex items-center gap-2 px-3.5 rounded-full bg-white type-label font-semibold text-[#11201E] whitespace-nowrap cursor-pointer">
                 Amount{(applied.amountMin !== null || applied.amountMax !== null) && " •"}
                 <ChevronDown size={16} className="opacity-70" />
             </Popover.Trigger>
             <Popover.Portal>
                 <Popover.Positioner align="end" sideOffset={6} className="z-50">
                     <Popover.Popup className={cn(panelClass, "w-70 p-3.5 flex flex-col gap-3 outline-none")}>
-                        <span className="text-[13px] font-semibold text-[#11201E]">Amount range</span>
+                        <span className="type-label font-semibold text-[#11201E]">Amount range</span>
                         <div className="grid grid-cols-2 gap-2">
-                            <label className="h-11 flex items-center gap-1 px-3 rounded-xl border border-[#CBD5D2] text-[13px] text-[#5A6B68]">
+                            <label className="h-11 flex items-center gap-1 px-3 rounded-xl border border-[#CBD5D2] type-label text-[#5A6B68]">
                                 Min ₹
-                                <input type="text" inputMode="decimal" placeholder="0" aria-label="Minimum amount" value={min} onChange={e => setMin(e.target.value)} className="flex-1 min-w-0 border-0 outline-0 text-sm text-[#11201E]" />
+                                <input type="text" inputMode="decimal" placeholder="0" aria-label="Minimum amount" value={min} onChange={e => setMin(e.target.value)} className="flex-1 min-w-0 border-0 outline-0 type-body text-[#11201E]" />
                             </label>
-                            <label className="h-11 flex items-center gap-1 px-3 rounded-xl border border-[#CBD5D2] text-[13px] text-[#5A6B68]">
+                            <label className="h-11 flex items-center gap-1 px-3 rounded-xl border border-[#CBD5D2] type-label text-[#5A6B68]">
                                 Max ₹
-                                <input type="text" inputMode="decimal" placeholder="Any" aria-label="Maximum amount" value={max} onChange={e => setMax(e.target.value)} className="flex-1 min-w-0 border-0 outline-0 text-sm text-[#11201E]" />
+                                <input type="text" inputMode="decimal" placeholder="Any" aria-label="Maximum amount" value={max} onChange={e => setMax(e.target.value)} className="flex-1 min-w-0 border-0 outline-0 type-body text-[#11201E]" />
                             </label>
                         </div>
-                        <Popover.Close onClick={handleApply} className="h-11 rounded-full bg-[#0E7C6B] text-white text-sm font-semibold cursor-pointer">Apply</Popover.Close>
+                        <Popover.Close onClick={handleApply} className="h-11 rounded-full bg-[#0E7C6B] text-white type-body font-semibold cursor-pointer">Apply</Popover.Close>
                     </Popover.Popup>
                 </Popover.Positioner>
             </Popover.Portal>

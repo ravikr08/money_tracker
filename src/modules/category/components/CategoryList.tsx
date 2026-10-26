@@ -27,11 +27,11 @@ function CategoryEmptyState({ status, hasAny }: { status: string, hasAny: boolea
                     <Minus size={10} strokeWidth={3} />
                 </span>
             </div>
-            <h3 className="mt-5 text-[15px] font-bold text-[#0B1020]">{title}</h3>
-            <p className="mt-1.5 max-w-[260px] text-xs leading-relaxed text-slate">{text}</p>
+            <h3 className="mt-5 type-item-title font-bold text-[#0B1020]">{title}</h3>
+            <p className="mt-1.5 max-w-[260px] type-label text-slate">{text}</p>
             {showAll &&
                 // inert for now, the filter is yours: categoryServices.updateFilters({ status: "all" })
-                <button type="button" className="mt-4 px-4 py-2 rounded-full border border-[#D9DEF0] text-xs font-semibold text-[#0B1020] hover:bg-slate-soft cursor-pointer">
+                <button type="button" className="mt-4 px-4 py-2 rounded-full border border-[#D9DEF0] type-caption font-semibold text-[#0B1020] hover:bg-slate-soft cursor-pointer">
                     Show all categories
                 </button>
             }
@@ -67,7 +67,7 @@ export default function CategoryList({ selected, setSelected }: { selected: stri
         <Card className="w-full p-0 bg-transparent md:bg-white md:p-3 lg:p-5 md:rounded-3xl xl:p-0 xl:pt-4 xl:pb-3 xl:rounded-[20px]">
             {/* header of the table, desktop only. same columns as the rows (see CategoryListItem) */}
             {filteredCategoriesList.length > 0 &&
-                <div className="hidden xl:grid grid-cols-[76px_36px_1fr_104px_80px_110px_40px] items-center gap-x-3 mx-3 pl-[22px] pr-1 pb-3 mb-1 border-b border-[#EEF0F7] text-[12px] font-semibold text-ink-soft">
+                <div className="hidden xl:grid grid-cols-[76px_36px_1fr_104px_80px_110px_40px] items-center gap-x-3 mx-3 pl-[22px] pr-1 pb-3 mb-1 border-b border-[#EEF0F7] type-caption font-semibold text-ink-soft">
                     <input type="checkbox" className="w-4 h-4 cursor-pointer" aria-label="Select all" onChange={handleSelectAll} checked={allSelected} ref={el => { if (el) el.indeterminate = selected.length > 0 && !allSelected }} />
                     <span></span>
                     <span>Name</span>

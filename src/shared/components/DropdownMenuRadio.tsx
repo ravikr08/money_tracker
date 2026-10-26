@@ -16,7 +16,7 @@ export default function DropdownMenuRadio<T>({
         <DropdownMenu open={open} onOpenChange={(isOpen) => { setOpen(isOpen) }}>
             <DropdownMenuTrigger
                 render={
-                    <button className="bg-white rounded-full h-11 w-full justify-between px-4 md:rounded-lg md:h-auto md:w-auto md:justify-start md:px-4.5 py-2 text-sm text-slate font-semibold flex items-center gap-2 cursor-pointer" onClick={e => e.stopPropagation()}>
+                    <button className="bg-white rounded-full h-11 w-full justify-between px-4 md:rounded-lg md:h-auto md:w-auto md:justify-start md:px-4.5 py-2 type-body text-slate font-semibold flex items-center gap-2 cursor-pointer" onClick={e => e.stopPropagation()}>
                         {selected && options.find((o) => o.value === selected)?.label}
                         {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>

@@ -17,6 +17,46 @@ html {
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============ Type scale ============
+   One size for the same kind of content on every page. Two steps: phone and tablet, and laptop and up (1024px, where
+   the sidebar layout starts). Size and line height only, the weight and the colour stay on the element.
+   To change a size everywhere, change it here. */
+:root {
+  /* phone and tablet */
+  --fs-display: 32px;       --lh-display: 38px;
+  --fs-page-title: 24px;    --lh-page-title: 32px;
+  --fs-stat: 24px;          --lh-stat: 30px;
+  --fs-section-title: 18px; --lh-section-title: 26px;
+  --fs-item-title: 15px;    --lh-item-title: 22px;
+  --fs-body: 14px;          --lh-body: 20px;
+  --fs-label: 13px;         --lh-label: 18px;
+  --fs-caption: 12px;       --lh-caption: 16px;
+  --fs-micro: 11px;         --lh-micro: 14px;
+}
+@media (min-width: 1024px) {
+  :root {
+    /* laptop and bigger screens */
+    --fs-display: 40px;       --lh-display: 46px;
+    --fs-page-title: 30px;    --lh-page-title: 38px;
+    --fs-stat: 28px;          --lh-stat: 34px;
+    --fs-section-title: 20px; --lh-section-title: 28px;
+    --fs-item-title: 16px;    --lh-item-title: 24px;
+    --fs-body: 15px;          --lh-body: 22px;
+    --fs-label: 14px;         --lh-label: 20px;
+    --fs-caption: 13px;       --lh-caption: 18px;
+    --fs-micro: 12px;         --lh-micro: 16px;
+  }
+}
+@utility type-display       { font-size: var(--fs-display);       line-height: var(--lh-display);       letter-spacing: -0.01em; } /* the big total of a page or a card */
+@utility type-page-title    { font-size: var(--fs-page-title);    line-height: var(--lh-page-title);    letter-spacing: -0.01em; } /* the title in the header of every page */
+@utility type-stat          { font-size: var(--fs-stat);          line-height: var(--lh-stat); }          /* a number in a summary or in an account card */
+@utility type-section-title { font-size: var(--fs-section-title); line-height: var(--lh-section-title); } /* a section heading, the title of a dialog, sheet or drawer */
+@utility type-item-title    { font-size: var(--fs-item-title);    line-height: var(--lh-item-title); }    /* the name or the amount in a list row, the text of an input */
+@utility type-body          { font-size: var(--fs-body);          line-height: var(--lh-body); }          /* normal text, buttons, menu items, the sub title of the header */
+@utility type-label         { font-size: var(--fs-label);         line-height: var(--lh-label); }         /* field labels, filter buttons, captions of a number */
+@utility type-caption       { font-size: var(--fs-caption);       line-height: var(--lh-caption); }       /* small info under a title, badges, table heads */
+@utility type-micro         { font-size: var(--fs-micro);         line-height: var(--lh-micro); }         /* the smallest text: nav labels, time under an amount */
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;

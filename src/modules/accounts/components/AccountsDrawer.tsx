@@ -50,8 +50,8 @@ function PanelHeader({ kind, name }: { kind: string, name: string }) {
     return (
         <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-4">
             <div className="min-w-0">
-                <p className="text-xs font-semibold tracking-wider uppercase text-slate">{kind}</p>
-                <DrawerTitle className="text-[22px] leading-7 font-bold text-[#11142B] truncate">{name}</DrawerTitle>
+                <p className="type-micro font-semibold tracking-wider uppercase text-slate">{kind}</p>
+                <DrawerTitle className="type-section-title font-bold text-[#11142B] truncate">{name}</DrawerTitle>
             </div>
             <DrawerClose render={<button aria-label="Close" className="size-10 -mr-2 -mt-1 grid place-items-center rounded-full text-[#11142B] cursor-pointer hover:bg-bg"><X size={20} strokeWidth={1.8} /></button>} />
         </div>
@@ -61,10 +61,10 @@ function PanelHeader({ kind, name }: { kind: string, name: string }) {
 function InfoList({ title, rows }: { title: string, rows: { label: string, value: string }[] }) {
     return (
         <section>
-            <h4 className="text-sm font-semibold text-[#11142B] mb-3">{title}</h4>
+            <h4 className="type-body font-semibold text-[#11142B] mb-3">{title}</h4>
             <ul className="rounded-[20px] border border-[#E6E9F4] overflow-hidden">
                 {rows.map(row => (
-                    <li key={row.label} className="flex justify-between gap-4 px-4 py-3.5 text-sm border-b border-[#EEF0F7] last:border-b-0">
+                    <li key={row.label} className="flex justify-between gap-4 px-4 py-3.5 type-body border-b border-[#EEF0F7] last:border-b-0">
                         <span className="text-slate">{row.label}</span>
                         <span className="font-semibold text-[#11142B] text-right">{row.value}</span>
                     </li>
@@ -97,14 +97,14 @@ function RecentTransactions({ accountId }: { accountId: string }) {
     return (
         <section>
             <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-[#11142B]">Recent transactions</h4>
-                {recent.length > 0 && <button type="button" onClick={handleViewAll} className="text-[13px] font-semibold text-[#2A3BC4] cursor-pointer">View all</button>}
+                <h4 className="type-body font-semibold text-[#11142B]">Recent transactions</h4>
+                {recent.length > 0 && <button type="button" onClick={handleViewAll} className="type-label font-semibold text-[#2A3BC4] cursor-pointer">View all</button>}
             </div>
             {recent.length === 0
                 ? <div className="rounded-[20px] border border-dashed border-[#D5DAF0] px-4 py-6 flex flex-col items-center text-center gap-1">
                     <span className="size-10 grid place-items-center rounded-full bg-[#E6EAFF] text-[#2A3BC4] mb-2"><ArrowLeftRight size={18} strokeWidth={1.8} /></span>
-                    <p className="text-sm font-semibold text-[#11142B]">No transactions yet</p>
-                    <p className="text-[13px] text-slate">Transactions you record will appear here.</p>
+                    <p className="type-body font-semibold text-[#11142B]">No transactions yet</p>
+                    <p className="type-label text-slate">Transactions you record will appear here.</p>
                 </div>
                 : <ul className="rounded-[20px] border border-[#E6E9F4] overflow-hidden">
                     {recent.map(t => {
@@ -117,10 +117,10 @@ function RecentTransactions({ accountId }: { accountId: string }) {
                             <li key={t.id} className="flex items-center gap-3 px-4 py-3 border-b border-[#EEF0F7] last:border-b-0">
                                 <span className={cn("size-10 shrink-0 grid place-items-center rounded-xl", kind.tile)}><Icon size={18} strokeWidth={2} /></span>
                                 <span className="flex-1 min-w-0 flex flex-col">
-                                    <span className="text-sm font-semibold text-[#11142B] truncate">{t.title ?? categoryNames[t.categoryId]}</span>
-                                    <span className="text-xs text-slate truncate">{categoryNames[t.categoryId]} · {date}</span>
+                                    <span className="type-body font-semibold text-[#11142B] truncate">{t.title ?? categoryNames[t.categoryId]}</span>
+                                    <span className="type-caption text-slate truncate">{categoryNames[t.categoryId]} · {date}</span>
                                 </span>
-                                <b className={cn("shrink-0 text-sm", isOut ? "text-[#11142B]" : "text-[#0B7A4B]")}>{isOut ? "−" : "+"}{formatCurrency(t.amount)}</b>
+                                <b className={cn("shrink-0 type-body", isOut ? "text-[#11142B]" : "text-[#0B7A4B]")}>{isOut ? "−" : "+"}{formatCurrency(t.amount)}</b>
                             </li>
                         )
                     })}
@@ -174,8 +174,8 @@ function AccountDetails({ id }: { id: string }) {
                             ? <Badge className="bg-green-soft text-green rounded-full px-3">Active</Badge>
                             : <Badge className="bg-coral-soft text-coral rounded-full px-3">Archived</Badge>}
                     </div>
-                    <p className="mt-5 text-4xl font-bold tracking-tight text-[#11142B] break-all">{formatCurrency(balance)}</p>
-                    <p className="mt-1 text-xs font-semibold tracking-wider uppercase text-slate">AVAILABLE BALANCE</p>
+                    <p className="mt-5 type-display font-bold tracking-tight text-[#11142B] break-all">{formatCurrency(balance)}</p>
+                    <p className="mt-1 type-micro font-semibold tracking-wider uppercase text-slate">AVAILABLE BALANCE</p>
                 </div>
 
                 <InfoList title="Account information" rows={[
@@ -212,14 +212,14 @@ function CreditCardDetails({ id }: { id: string }) {
                             <span className="size-11 shrink-0 grid place-items-center rounded-full bg-white/15"><CreditCard size={20} strokeWidth={1.8} /></span>
                             <span className="font-semibold truncate">{AccountsTypeNameMap["credit-card"]}</span>
                         </div>
-                        <span className="shrink-0 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">{isActive ? paymentStatus : "Archived"}</span>
+                        <span className="shrink-0 rounded-full bg-white/15 px-3 py-1 type-caption font-semibold">{isActive ? paymentStatus : "Archived"}</span>
                     </div>
-                    <p className="mt-5 text-xs font-semibold tracking-wider uppercase text-white/75">OUTSTANDING BALANCE</p>
-                    <p className="mt-1 text-4xl font-bold tracking-tight break-all">{formatCurrency(outstanding)}</p>
+                    <p className="mt-5 type-micro font-semibold tracking-wider uppercase text-white/75">OUTSTANDING BALANCE</p>
+                    <p className="mt-1 type-display font-bold tracking-tight break-all">{formatCurrency(outstanding)}</p>
                     <div className="mt-4 h-1.5 rounded-full bg-white/25 overflow-hidden">
                         <div className="h-full rounded-full bg-white" style={{ width: `${Math.min(utilization, 100)}%` }} />
                     </div>
-                    <p className="mt-2 text-xs font-medium text-white/90">{utilization.toFixed(0)}% of {formatCurrency(card.creditLimit)} used</p>
+                    <p className="mt-2 type-caption font-medium text-white/90">{utilization.toFixed(0)}% of {formatCurrency(card.creditLimit)} used</p>
                 </div>
 
                 <InfoList title="Card information" rows={[

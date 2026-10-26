@@ -77,18 +77,18 @@ export function CreditCardDisplayCard({ account }: CreditCardProps) {
         <div className="flex items-center gap-3">
           {icon}
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold truncate">{account.name}</h3>
-            <p className="text-[13px] text-white/75">{paymentStatus} · {formattedDueDate}</p>
+            <h3 className="type-item-title font-semibold truncate">{account.name}</h3>
+            <p className="type-label text-white/75">{paymentStatus} · {formattedDueDate}</p>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-2xl font-bold leading-7">{formatCurrency(outstanding)}</p>
-            <p className="text-[10px] font-bold tracking-wider text-white/80">OUTSTANDING</p>
+            <p className="type-stat font-bold">{formatCurrency(outstanding)}</p>
+            <p className="type-micro font-bold tracking-wider text-white/80">OUTSTANDING</p>
           </div>
           {menu}
         </div>
         <div className="mt-3 flex items-center gap-3">
           {progress}
-          <span className="text-[13px] text-white/90">{utilization.toFixed(0)}% used</span>
+          <span className="type-label text-white/90">{utilization.toFixed(0)}% used</span>
         </div>
       </div>
 
@@ -97,18 +97,18 @@ export function CreditCardDisplayCard({ account }: CreditCardProps) {
         <div className="flex items-center gap-3">
           {icon}
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold truncate">{account.name}</h3>
-            <p className="text-[13px] text-white/75">Credit card · {paymentStatus}</p>
+            <h3 className="type-item-title font-semibold line-clamp-2 break-words">{account.name}</h3>
+            <p className="type-label text-white/75">Credit card · {paymentStatus}</p>
           </div>
           {menu}
         </div>
         <div className="mt-6 flex items-end justify-between gap-3">
-          <p className="text-[32px] font-bold leading-9">{formatCurrency(outstanding)}</p>
-          <p className="text-xs font-bold tracking-wider text-white/80">OUTSTANDING</p>
+          <p className="type-display font-bold">{formatCurrency(outstanding)}</p>
+          <p className="type-micro font-bold tracking-wider text-white/80">OUTSTANDING</p>
         </div>
         <div className="mt-3 flex items-center gap-4">
           {progress}
-          <span className="text-[13px] text-white/90">{utilization.toFixed(0)}% used · due {formattedDueDate}</span>
+          <span className="type-label text-white/90">{utilization.toFixed(0)}% used · due {formattedDueDate}</span>
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@ export default function CategoryListItem({ catObj, selected, setSelected }: { ca
     const statusBadge = catObj.status === "active" ?
         <Badge className={"bg-green-soft text-green " + pill}>Active</Badge> :
         <Badge className={"bg-coral-soft text-coral " + pill}>Archived</Badge>;
-    const subsCount = <span className="flex gap-1 justify-center text-slate xl:text-[12px]"><span className="font-semibold xl:font-normal">{subCategoriesMap[catObj.id]?.length ?? 0}</span> subs</span>;
+    const subsCount = <span className="flex gap-1 justify-center type-caption text-slate"><span className="font-semibold xl:font-normal">{subCategoriesMap[catObj.id]?.length ?? 0}</span> subs</span>;
 
     // phone (below md): a slim card with icon, name, chevron and menu, the badges show up when it is opened
     // tablet (md to xl): one line, the columns are only as wide as they need
@@ -52,7 +52,7 @@ export default function CategoryListItem({ catObj, selected, setSelected }: { ca
     return (
         <AccordionItem value={catObj.id} className={cn("group/row relative mb-3 md:mb-0 bg-white rounded-[18px] border border-[#E6E9F4] overflow-hidden md:overflow-visible md:rounded-none md:border-0 md:border-b md:border-[#EEF0F7] xl:border-b-0 md:bg-transparent", isChecked() && "max-md:border-[#3347E0]")}>
 
-            <AccordionTrigger className={cn("w-full grid grid-cols-[auto_1fr_auto_auto] md:grid-cols-[auto_auto_1fr_92px_64px_84px_32px] xl:grid-cols-[76px_36px_1fr_104px_80px_110px_40px] relative items-center min-h-14 md:min-h-0 py-2 pl-3 pr-1 md:py-3 md:px-3 xl:py-3 xl:pl-[34px] xl:pr-4 rounded-none md:rounded-lg gap-x-3 md:gap-x-3 xl:gap-x-3 cursor-pointer hover:bg-gray-100 text-center text-sm border-0 mb-0", catObj.status !== "active" && "opacity-60")} >
+            <AccordionTrigger className={cn("w-full grid grid-cols-[auto_1fr_auto_auto] md:grid-cols-[auto_auto_1fr_92px_64px_84px_32px] xl:grid-cols-[76px_36px_1fr_104px_80px_110px_40px] relative items-center min-h-14 md:min-h-0 py-2 pl-3 pr-1 md:py-3 md:px-3 xl:py-3 xl:pl-[34px] xl:pr-4 rounded-none md:rounded-lg gap-x-3 md:gap-x-3 xl:gap-x-3 cursor-pointer hover:bg-gray-100 text-center type-body border-0 mb-0", catObj.status !== "active" && "opacity-60")} >
                 {/* the coloured bar on the left of the row, desktop only */}
                 <span className="hidden xl:block absolute left-3 top-1/2 -translate-y-1/2 h-[38px] w-1 rounded-full" style={{ background: getColorShades(catObj.color).ink }}></span>
                 {/* checkbox is not on the phone, there only the chevron is kept and it moves to the right */}
@@ -77,7 +77,7 @@ export default function CategoryListItem({ catObj, selected, setSelected }: { ca
                         </span>
                     }
                 </span>
-                <h2 className="text-base md:text-[14px] text-left font-semibold xl:text-[14px]">{catObj.name}</h2>
+                <h2 className="type-item-title text-left font-semibold">{catObj.name}</h2>
 
                 {/* the badges are the columns of the row (tablet and desktop), not on the phone */}
                 <div className="hidden md:contents">

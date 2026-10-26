@@ -7,18 +7,22 @@ const bottomPages = pages.filter(page => page.path !== "/settings");
 
 export default function BottomNav() {
     return (
-        <nav aria-label="Main" className="md:hidden shrink-0 grid grid-cols-5 gap-0.5 px-2 pt-2 pb-3.5 bg-white border-t border-[#E6E9F4]">
+        <nav aria-label="Main" className="md:hidden shrink-0 flex gap-0.5 px-2 pt-2 pb-2 bg-white border-t border-[#E6E9F4]">
             {bottomPages.map(({ path, label, icon: Icon }) => (
                 <NavLink
                     key={path}
                     to={path}
                     className={({ isActive }) => cn(
-                        "min-h-14 flex flex-col items-center justify-center gap-[3px] rounded-[14px] text-[11px] font-medium text-[#586079]",
-                        isActive && "bg-(--nav-active-bg) text-(--nav-active-fg) font-semibold"
+                        "min-h-14 min-w-0 flex-1 px-1 flex flex-col items-center justify-center gap-1 rounded-sm type-micro font-medium text-[#586079]",
+                        isActive && "flex-[1.4] px-[3px] bg-(--nav-active-bg) text-(--nav-active-fg) font-semibold"
                     )}
                 >
-                    <Icon size={22} strokeWidth={1.8} />
-                    {label}
+                    {({ isActive }) => (
+                        <>
+                            <Icon size={22} strokeWidth={1.8} />
+                            <span className={isActive ? undefined : "sr-only"}>{label}</span>
+                        </>
+                    )}
                 </NavLink>
             ))}
         </nav>

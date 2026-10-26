@@ -13,7 +13,7 @@ function App() {
       <SideBar />
       <main className='bg-bg w-full min-w-0 flex-1 min-h-0 px-4 pt-4 sm:px-6 md:px-8 md:py-6 lg:py-10 xl:px-[60px] overflow-hidden md:overflow-y-auto flex flex-col gap-4 sm:gap-8 lg:gap-6'>
         <Header />
-        <div className="max-w-[1600px] w-full mx-auto flex flex-col flex-1 min-h-0 overflow-y-auto pb-24 md:pb-0 md:flex-none md:overflow-visible">
+        <div className="max-w-[1600px] w-full mx-auto flex flex-col flex-1 min-h-0 overflow-y-auto [scrollbar-width:none]! [&::-webkit-scrollbar]:hidden pb-24 md:pb-0 md:flex-none md:overflow-visible">
           <Outlet />
         </div>
       </main>

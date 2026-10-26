@@ -21,7 +21,7 @@ export const KINDS: Record<TransactionTypes, { label: string, icon: LucideIcon, 
     payment: { label: "Card payment", icon: CreditCard, tile: "bg-[#EFE8FF] text-[#5B3FC4]", amount: "text-[#5B3FC4]" },
 }
 
-const menuItemClass = "min-h-11 flex items-center gap-3 px-3 py-1.5 rounded-[10px] text-sm font-medium text-[#11201E] cursor-pointer";
+const menuItemClass = "min-h-11 flex items-center gap-3 px-3 py-1.5 rounded-[10px] type-body font-medium text-[#11201E] cursor-pointer";
 
 // income and expense get a sign, transfers and card payments only move money so they have none
 export function formatAmount(t: Transaction) {
@@ -60,13 +60,13 @@ export default function TransactionRow({ transaction }: { transaction: Transacti
             <button type="button" onClick={openDetails} className={cn("md:hidden w-full text-left flex items-center gap-3 min-h-16 px-3.5 py-2.5 bg-white cursor-pointer", isArchived && "opacity-60")}>
                 <span className={`size-10 shrink-0 grid place-items-center rounded-xl ${kind.tile}`}><Icon size={19} strokeWidth={2} /></span>
                 <span className="flex-1 min-w-0 flex flex-col gap-0.5">
-                    <span className="text-[15px] font-semibold truncate">{row.title}</span>
-                    <span className="text-xs text-[#5A6B68] truncate">{row.category} · {row.account}</span>
-                    {row.note && <span className="text-xs italic text-[#7B8A87] truncate">“{row.note}”</span>}
+                    <span className="type-item-title font-semibold truncate">{row.title}</span>
+                    <span className="type-caption text-[#5A6B68] truncate">{row.category} · {row.account}</span>
+                    {row.note && <span className="type-caption italic text-[#7B8A87] truncate">“{row.note}”</span>}
                 </span>
                 <span className="shrink-0 flex flex-col items-end gap-0.5">
-                    <b className={`text-[15px] font-bold ${kind.amount}`}>{row.amount}</b>
-                    <span className="text-[11px] text-[#5A6B68]">{row.date}</span>
+                    <b className={`type-item-title font-bold ${kind.amount}`}>{row.amount}</b>
+                    <span className="type-micro text-[#5A6B68]">{row.date}</span>
                 </span>
             </button>
 
@@ -75,15 +75,15 @@ export default function TransactionRow({ transaction }: { transaction: Transacti
                 <span className={`size-10 grid place-items-center rounded-xl ${kind.tile}`}><Icon size={19} strokeWidth={2} /></span>
 
                 <span className="min-w-0 flex flex-col gap-0.5">
-                    <span className="text-[15px] font-semibold truncate">{row.title}</span>
-                    <span className="text-xs text-[#5A6B68]">{kind.label}{isArchived && " · Archived"}</span>
-                    {row.note && <span className="text-xs italic text-[#7B8A87] truncate">“{row.note}”</span>}
+                    <span className="type-item-title font-semibold truncate">{row.title}</span>
+                    <span className="type-caption text-[#5A6B68]">{kind.label}{isArchived && " · Archived"}</span>
+                    {row.note && <span className="type-caption italic text-[#7B8A87] truncate">“{row.note}”</span>}
                 </span>
 
-                <span className="justify-self-start max-w-full px-3 py-1 rounded-full bg-[#EEF3F1] text-[#3C4C49] text-xs font-semibold whitespace-nowrap truncate">{row.category}</span>
-                <span className="text-[13px] xl:text-sm text-[#5A6B68] xl:text-[#3C4C49] truncate">{row.account}</span>
-                <span className="hidden xl:block text-sm text-[#5A6B68] truncate">{row.date}</span>
-                <b className={`text-right text-[15px] font-bold ${kind.amount}`}>{row.amount}</b>
+                <span className="justify-self-start max-w-full px-3 py-1 rounded-full bg-[#EEF3F1] text-[#3C4C49] type-caption font-semibold whitespace-nowrap truncate">{row.category}</span>
+                <span className="type-body text-[#5A6B68] xl:text-[#3C4C49] truncate">{row.account}</span>
+                <span className="hidden xl:block type-body text-[#5A6B68] truncate">{row.date}</span>
+                <b className={`text-right type-item-title font-bold ${kind.amount}`}>{row.amount}</b>
 
                 {/* only "View details" works, the other three are for you to wire */}
                 {/* the row opens the details when clicked, so clicks on the menu are stopped here (they would bubble through the portal too) */}

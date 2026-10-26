@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import type { Category } from "./category.model";
 
 const BADGES: { value: number; label: string; color: string }[] = [
-    { value: 0, label: "categories total", color: "" },
+    { value: 0, label: "category total", color: "" },
     { value: 0, label: "active", color: "green" },
     { value: 0, label: "archived", color: "coral" },
 ];
@@ -16,7 +16,7 @@ export default function CategoryPage() {
     const [selected, setSeleted] = useState<string[]>([]);
     const categories: Category[] = useSelector(state => state.categorySlice.categories)
     BADGES.forEach(el => {
-        if (el.label === "categories total") {
+        if (el.label === "category total") {
             el.value = categories.filter(cat => cat.status !== "deleted").length;
         } else {
             el.value = categories.filter((cat: Category) => cat.status.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
@@ -24,11 +24,11 @@ export default function CategoryPage() {
     })
     return (
         <div className="w-full h-full flex flex-col gap-4 xl:gap-5">
-            <div className="flex gap-2 sm:gap-3 overflow-x-auto md:flex-wrap shrink-0 [scrollbar-width:none]! [&::-webkit-scrollbar]:hidden">
+            <div className="flex flex-wrap gap-2 sm:gap-3 shrink-0">
                 {BADGES.map((badge) => (
                     <Badge
                         key={badge.label}
-                        className={`bg-white text-slate px-3 py-2 rounded-full text-[12px] font-semibold flex items-baseline shrink-0 whitespace-nowrap`}
+                        className={`bg-white text-slate px-2.5 md:px-3 py-2 rounded-full type-caption font-semibold flex items-baseline shrink-0 whitespace-nowrap`}
                     >
                         <span className="flex items-center gap-1 mr-1">
 
@@ -38,7 +38,7 @@ export default function CategoryPage() {
                                     style={{ backgroundColor: "var(--" + badge.color + ")" }}
                                 ></span>
                             )}
-                            <p className="font-bold text-[14px]">{badge.value}</p>
+                            <p className="font-bold type-body">{badge.value}</p>
                         </span>
                         {badge.label}
                     </Badge>

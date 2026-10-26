@@ -27,12 +27,12 @@ export default function AccountsDisplayCard({ account }: { account: Accounts }) 
                     <Icon size={22} strokeWidth={1.8} />
                 </div>
                 <div className="text-left min-w-0">
-                    <h3 className="font-bold truncate">{account.name}</h3>
-                    <span className="text-[12px] text-gray-400">{AccountsTypeNameMap[account.type]}</span>
+                    <h3 className="type-item-title font-semibold truncate">{account.name}</h3>
+                    <span className="type-caption text-gray-400">{AccountsTypeNameMap[account.type]}</span>
                 </div>
                 <div className="text-right md:text-left md:col-span-2 md:row-start-2 md:order-last">
-                    <h1 className="text-lg md:text-2xl font-bold">{formatCurrency(balance)}</h1>
-                    <span className="text-[10px] md:text-[12px] tracking-wide text-gray-400">AVAILABLE BALANCE</span>
+                    <h1 className="type-section-title font-bold">{formatCurrency(balance)}</h1>
+                    <span className="type-micro tracking-wide text-gray-400">AVAILABLE BALANCE</span>
                 </div>
                 <div className="max-md:relative max-md:z-10 md:absolute md:right-4 md:top-5 hover:bg-blue-soft size-9 md:size-6 flex items-center justify-center rounded-[6px]"><AccountsMenuPopup id={account.id} type="account" isActive={isActive} /></div>
             </div>

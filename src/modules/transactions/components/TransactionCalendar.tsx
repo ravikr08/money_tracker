@@ -77,7 +77,7 @@ export default function TransactionCalendar() {
 
             <div className="grid grid-cols-7">
                 {/* phone: one letter, tablet and desktop: three */}
-                {WEEKDAYS.map(day => <span key={day} className="py-2 text-center text-xs font-semibold text-[#5A6B68]"><span className="md:hidden">{day[0]}</span><span className="hidden md:inline">{day}</span></span>)}
+                {WEEKDAYS.map(day => <span key={day} className="py-2 text-center type-caption font-semibold text-[#5A6B68]"><span className="md:hidden">{day[0]}</span><span className="hidden md:inline">{day}</span></span>)}
 
                 {cells.map((day, i) => {
                     if (day === null) return <span key={"empty-" + i}></span>;
@@ -96,10 +96,10 @@ export default function TransactionCalendar() {
                                 key === todayKey && "bg-[#DDF3EE] border-[#0E7C6B] hover:bg-[#DDF3EE]",
                             )}
                         >
-                            <span className="text-[15px] md:text-sm font-semibold text-[#11201E]">{day}</span>
+                            <span className="type-item-title font-semibold text-[#11201E]">{day}</span>
                             {list.length > 0 && <>
                                 {/* the amount is only on tablet and desktop, the phone cells have no room for it */}
-                                <span className={cn("hidden md:block text-xs font-semibold", net > 0 ? "text-[#0B7A4B]" : "text-[#5A6B68]")}>{shortAmount(net)}</span>
+                                <span className={cn("hidden md:block type-caption font-semibold", net > 0 ? "text-[#0B7A4B]" : "text-[#5A6B68]")}>{shortAmount(net)}</span>
                                 <span className="flex gap-1">{kinds.map(color => <span key={color} className={cn("size-1.5 rounded-full", color)}></span>)}</span>
                             </>}
                         </button>
@@ -107,7 +107,7 @@ export default function TransactionCalendar() {
                 })}
             </div>
 
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4 text-xs text-[#5A6B68]">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4 type-caption text-[#5A6B68]">
                 <span className="flex items-center gap-1.5"><span className={cn("size-1.5 rounded-full", DOTS.income)}></span>Income</span>
                 <span className="flex items-center gap-1.5"><span className={cn("size-1.5 rounded-full", DOTS.expense)}></span>Expense</span>
                 <span className="flex items-center gap-1.5"><span className={cn("size-1.5 rounded-full", DOTS.transfer)}></span>Transfer / card payment</span>
@@ -129,7 +129,7 @@ function MonthPicker({ label, shown, onPick }: { label: string, shown: { year: n
 
     return (
         <Popover.Root onOpenChange={open => { if (open) setYear(shown.year); }}>
-            <Popover.Trigger className="justify-self-center h-11 flex items-center gap-1.5 px-4 rounded-full border-2 border-transparent data-popup-open:border-[#0E7C6B] text-base md:text-lg font-semibold text-[#11201E] cursor-pointer outline-none">
+            <Popover.Trigger className="justify-self-center h-11 flex items-center gap-1.5 px-4 rounded-full border-2 border-transparent data-popup-open:border-[#0E7C6B] type-section-title font-semibold text-[#11201E] cursor-pointer outline-none">
                 {label}
                 <ChevronDown size={16} className="opacity-70" />
             </Popover.Trigger>
@@ -138,7 +138,7 @@ function MonthPicker({ label, shown, onPick }: { label: string, shown: { year: n
                     <Popover.Popup className="w-[300px] p-4 flex flex-col gap-3 rounded-3xl bg-white border border-[#E1E8E6] shadow-[0_12px_32px_rgba(17,32,30,0.18)] outline-none">
                         <div className="grid grid-cols-[40px_1fr_40px] items-center">
                             <button type="button" onClick={() => setYear(y => y - 1)} aria-label="Previous year" className="size-10 grid place-items-center rounded-full bg-[#EEF3F1] cursor-pointer"><ChevronLeft size={16} /></button>
-                            <b className="text-center text-[15px] text-[#11201E]">{year}</b>
+                            <b className="text-center type-item-title text-[#11201E]">{year}</b>
                             <button type="button" onClick={() => setYear(y => y + 1)} disabled={year >= now.getFullYear()} aria-label="Next year" className="size-10 grid place-items-center rounded-full bg-[#EEF3F1] cursor-pointer disabled:opacity-40 disabled:cursor-default"><ChevronRight size={16} /></button>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
@@ -150,7 +150,7 @@ function MonthPicker({ label, shown, onPick }: { label: string, shown: { year: n
                                         key={name}
                                         disabled={isFuture}
                                         onClick={() => onPick(year, i)}
-                                        className={cn("h-11 rounded-xl text-sm font-semibold cursor-pointer disabled:cursor-default", isShown ? "bg-[#0B1F1C] text-white" : "bg-[#EEF3F1] text-[#11201E]", isFuture && "opacity-40")}
+                                        className={cn("h-11 rounded-xl type-body font-semibold cursor-pointer disabled:cursor-default", isShown ? "bg-[#0B1F1C] text-white" : "bg-[#EEF3F1] text-[#11201E]", isFuture && "opacity-40")}
                                     >
                                         {name}
                                     </Popover.Close>
@@ -185,12 +185,12 @@ function DayPopup({ dayKey, transactions, onClose }: { dayKey: string | null, tr
         <Dialog open={dayKey !== null} onOpenChange={open => { if (!open) onClose(); }}>
             <DialogContent showCloseButton className="sm:max-w-[520px] gap-3 rounded-[28px] bg-white p-6 max-h-[80dvh] overflow-y-auto max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:translate-x-0 max-md:translate-y-0 max-md:max-w-full max-md:sm:max-w-full max-md:rounded-b-none max-md:pb-10">
                 <span className="md:hidden mx-auto -mt-2 mb-1 h-1 w-10 rounded-full bg-[#D5DDDA]"></span>
-                <DialogTitle className="text-xl font-semibold text-[#11201E]">{group?.label ?? emptyLabel}</DialogTitle>
-                <DialogDescription className="text-sm text-[#5A6B68]">
+                <DialogTitle className="type-section-title font-semibold text-[#11201E]">{group?.label ?? emptyLabel}</DialogTitle>
+                <DialogDescription className="type-body text-[#5A6B68]">
                     {count} {count === 1 ? "transaction" : "transactions"}{group && ` · Net ${formatSigned(group.net)}`}
                 </DialogDescription>
 
-                {!group && <p className="mt-2 py-5 rounded-2xl bg-[#F1F4F3] text-center text-sm text-[#5A6B68]">No transactions on this day.</p>}
+                {!group && <p className="mt-2 py-5 rounded-2xl bg-[#F1F4F3] text-center type-body text-[#5A6B68]">No transactions on this day.</p>}
 
                 <ul className="flex flex-col mt-2">
                     {group?.rows.map(t => {
@@ -205,13 +205,13 @@ function DayPopup({ dayKey, transactions, onClose }: { dayKey: string | null, tr
                             <li key={t.id} className="flex items-center gap-3 py-3 border-b border-[#EEF2F0] last:border-b-0">
                                 <span className={cn("size-10 shrink-0 grid place-items-center rounded-xl", kind.tile)}><Icon size={19} strokeWidth={2} /></span>
                                 <span className="flex-1 min-w-0 flex flex-col gap-0.5">
-                                    <span className="text-[15px] font-semibold truncate">{t.title ?? categoryName}</span>
-                                    <span className="text-xs text-[#5A6B68] truncate">{category} · {account}</span>
-                                    {t.note && <span className="text-xs italic text-[#7B8A87] truncate">“{t.note}”</span>}
+                                    <span className="type-item-title font-semibold truncate">{t.title ?? categoryName}</span>
+                                    <span className="type-caption text-[#5A6B68] truncate">{category} · {account}</span>
+                                    {t.note && <span className="type-caption italic text-[#7B8A87] truncate">“{t.note}”</span>}
                                 </span>
                                 <span className="shrink-0 flex flex-col items-end gap-0.5">
-                                    <b className={cn("text-[15px] font-bold", kind.amount)}>{formatAmount(t)}</b>
-                                    <span className="text-[11px] text-[#5A6B68]">{time}</span>
+                                    <b className={cn("type-item-title font-bold", kind.amount)}>{formatAmount(t)}</b>
+                                    <span className="type-micro text-[#5A6B68]">{time}</span>
                                 </span>
                             </li>
                         )

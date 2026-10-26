@@ -24,7 +24,7 @@ function Handle() {
 function SheetHeader({ title }: { title: string }) {
     return (
         <div className="flex items-start justify-between gap-3 px-6 pt-5 pb-4">
-            <DialogTitle className="text-[20px] leading-7 font-semibold text-[#11201E]">{title}</DialogTitle>
+            <DialogTitle className="type-section-title font-semibold text-[#11201E]">{title}</DialogTitle>
             <DialogClose render={<button aria-label="Close" className="size-10 -mr-2 -mt-1 grid place-items-center rounded-full text-[#11201E] cursor-pointer hover:bg-[#EEF3F1]"><X size={20} strokeWidth={1.8} /></button>} />
         </div>
     )
@@ -50,13 +50,13 @@ function DeleteContent({ id }: { id: string }) {
             <SheetHeader title="Delete transaction?" />
             <div className="px-6 pb-5 flex flex-col gap-3">
                 <span className="size-12 grid place-items-center rounded-full bg-[#FFE4E4] text-[#B42318]"><TrashIcon /></span>
-                <DialogDescription className="text-sm text-[#5A6B68]">
+                <DialogDescription className="type-body text-[#5A6B68]">
                     “{transaction.title}” ({formatAmount(transaction)}) will be removed and its effect on your account balances will be reversed.
                 </DialogDescription>
             </div>
             <div className="flex gap-3 px-6 py-4 border-t border-[#EEF2F0] md:justify-end">
-                <DialogClose render={<button type="button" className="h-12 max-md:flex-1 md:px-6 rounded-full border border-[#CBD5D2] text-sm font-semibold text-[#11201E] cursor-pointer">Cancel</button>} />
-                <button type="button" onClick={() => { transactionServices.deleteTransaction(id); TRANSACTION_DELETE_HANDLE.close(); }} className="h-12 max-md:flex-1 md:px-6 rounded-full bg-[#B42318] hover:bg-[#9A1D14] text-sm font-semibold text-white cursor-pointer">Delete</button>
+                <DialogClose render={<button type="button" className="h-12 max-md:flex-1 md:px-6 rounded-full border border-[#CBD5D2] type-body font-semibold text-[#11201E] cursor-pointer">Cancel</button>} />
+                <button type="button" onClick={() => { transactionServices.deleteTransaction(id); TRANSACTION_DELETE_HANDLE.close(); }} className="h-12 max-md:flex-1 md:px-6 rounded-full bg-[#B42318] hover:bg-[#9A1D14] type-body font-semibold text-white cursor-pointer">Delete</button>
             </div>
         </DialogContent>
     )
@@ -75,7 +75,7 @@ const TYPE_TABS: { value: TransactionTypes, label: string }[] = [
     { value: "payment", label: "Card bill" },
 ];
 
-const fieldClass = "w-full h-12 px-4 rounded-2xl border border-[#CBD5D2] bg-white text-sm text-[#11201E] outline-none focus:border-[#0E7C6B]";
+const fieldClass = "w-full h-12 px-4 rounded-2xl border border-[#CBD5D2] bg-white type-body text-[#11201E] outline-none focus:border-[#0E7C6B]";
 
 // the form is filled with the transaction, "Save Changes" writes the draft back with transactionServices.updateTransaction
 export function TransactionEditDialog() {
@@ -108,9 +108,9 @@ function toLocalInput(date: Date) {
 // `label` is what the trigger shows. with `name` and `sub` the list shows two lines instead (account name and its kind)
 type SelectItemData = { value: string, label: string, name?: string, sub?: string, disabled?: boolean };
 
-const groupLabelClass = "px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wider uppercase text-[#5A6B68]";
+const groupLabelClass = "px-3 pt-2 pb-1 type-micro font-semibold tracking-wider uppercase text-[#5A6B68]";
 // the check mark of the shadcn item is hidden (it is the last span), the selected one is shown by its green background
-const itemClass = "group/item min-h-11 px-3 rounded-xl text-sm font-medium text-[#11201E] cursor-pointer data-selected:bg-[#DDF3EE] data-selected:text-[#0A5F52] data-selected:font-semibold data-highlighted:bg-[#EEF3F1] data-disabled:opacity-50 [&>span:last-child]:hidden";
+const itemClass = "group/item min-h-11 px-3 rounded-xl type-body font-medium text-[#11201E] cursor-pointer data-selected:bg-[#DDF3EE] data-selected:text-[#0A5F52] data-selected:font-semibold data-highlighted:bg-[#EEF3F1] data-disabled:opacity-50 [&>span:last-child]:hidden";
 
 // a select made from the shadcn Select (Base UI) instead of the browser's own <select>, which can't be styled.
 // `items` is what the trigger needs to turn a value into its label. without children the list is just the items
@@ -119,9 +119,9 @@ function FormSelect({ label, value, onChange, items, children, align = "start" }
     const isPhone = useMediaQuery("(max-width: 767px)");
     return (
         <div className="flex flex-col gap-1.5 min-w-0">
-            <span className="text-sm text-[#5A6B68]">{label}</span>
+            <span className="type-body text-[#5A6B68]">{label}</span>
             <Select value={value} onValueChange={next => next !== null && onChange(next)} items={items}>
-                <SelectTrigger aria-label={label} className="w-full h-12 px-4 gap-2 rounded-2xl border-[#CBD5D2] bg-white text-sm text-[#11201E] data-popup-open:border-[#0E7C6B] data-popup-open:ring-2 data-popup-open:ring-[#0E7C6B]/20">
+                <SelectTrigger aria-label={label} className="w-full h-12 px-4 gap-2 rounded-2xl border-[#CBD5D2] bg-white type-body text-[#11201E] data-popup-open:border-[#0E7C6B] data-popup-open:ring-2 data-popup-open:ring-[#0E7C6B]/20">
                     <SelectValue className="truncate" />
                 </SelectTrigger>
                 {/* as wide as the longest item (not cut at the width of the trigger), but not wider than the screen, and it scrolls when it is long */}
@@ -129,7 +129,7 @@ function FormSelect({ label, value, onChange, items, children, align = "start" }
                     {children ?? items.map(item => (
                         <SelectItem key={item.value} value={item.value} disabled={item.disabled} className={cn(itemClass, item.sub && "py-2")}>
                             {item.sub
-                                ? <span className="flex flex-col gap-px"><span>{item.name}</span><span className="text-[11px] font-medium text-[#5A6B68] group-data-selected/item:text-[#0A5F52]">{item.sub}</span></span>
+                                ? <span className="flex flex-col gap-px"><span>{item.name}</span><span className="type-micro font-medium text-[#5A6B68] group-data-selected/item:text-[#0A5F52]">{item.sub}</span></span>
                                 : item.label}
                         </SelectItem>
                     ))}
@@ -277,13 +277,13 @@ function EditForm({ transaction }: { transaction?: Transaction }) {
             <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-5 flex flex-col gap-3">
                 <div className="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-[#EEF3F1]">
                     {TYPE_TABS.map(tab => (
-                        <button key={tab.value} type="button" onClick={() => handleTypeChange(tab.value)} className={cn("h-10 rounded-xl text-[13px] font-semibold cursor-pointer", type === tab.value ? "bg-[#0B1F1C] text-white" : "text-[#5A6B68]")}>{tab.label}</button>
+                        <button key={tab.value} type="button" onClick={() => handleTypeChange(tab.value)} className={cn("h-10 rounded-xl type-label font-semibold cursor-pointer", type === tab.value ? "bg-[#0B1F1C] text-white" : "text-[#5A6B68]")}>{tab.label}</button>
                     ))}
                 </div>
 
                 <label className="flex items-center justify-center gap-2 h-16 rounded-2xl bg-[#F1F4F3]">
-                    <span className="text-2xl font-semibold text-[#5A6B68]">₹</span>
-                    <input type="text" inputMode="decimal" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" aria-label="Amount" className="w-40 border-0 outline-0 bg-transparent text-3xl font-bold text-[#11201E] placeholder:text-[#7B8A87]" />
+                    <span className="type-stat font-semibold text-[#5A6B68]">₹</span>
+                    <input type="text" inputMode="decimal" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" aria-label="Amount" className="w-40 border-0 outline-0 bg-transparent type-display font-bold text-[#11201E] placeholder:text-[#7B8A87]" />
                 </label>
 
                 <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title, e.g. Dinner with friends" aria-label="Title" className={fieldClass} />
@@ -309,7 +309,7 @@ function EditForm({ transaction }: { transaction?: Transaction }) {
 
                 {/* the button is only the look, the real input lies over it with no colour and opens the browser's picker when clicked */}
                 <div className="flex flex-col gap-1.5">
-                    <span className="text-sm text-[#5A6B68]">Date &amp; time</span>
+                    <span className="type-body text-[#5A6B68]">Date &amp; time</span>
                     <div className="relative">
                         <div className={cn(fieldClass, "flex items-center gap-2.5")}>
                             <CalendarDays size={18} className="shrink-0 text-[#0E7C6B]" />
@@ -322,12 +322,12 @@ function EditForm({ transaction }: { transaction?: Transaction }) {
 
                 {showNote
                     ? <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="Add a note" aria-label="Note" autoFocus className={fieldClass} />
-                    : <button type="button" onClick={() => setShowNote(true)} className="self-start flex items-center gap-2 py-1 text-sm font-semibold text-[#0E7C6B] cursor-pointer"><Plus size={16} /> Add note</button>}
+                    : <button type="button" onClick={() => setShowNote(true)} className="self-start flex items-center gap-2 py-1 type-body font-semibold text-[#0E7C6B] cursor-pointer"><Plus size={16} /> Add note</button>}
             </div>
 
             <div className="shrink-0 flex gap-3 px-6 py-4 border-t border-[#EEF2F0]">
-                <DialogClose render={<button type="button" className="h-12 flex-1 rounded-full border border-[#CBD5D2] text-sm font-semibold text-[#11201E] cursor-pointer">Cancel</button>} />
-                <button type="button" onClick={handleSave} className="h-12 flex-[1.4] rounded-full bg-[#0E7C6B] hover:bg-[#0A6B5C] text-sm font-semibold text-white cursor-pointer">{transaction ? "Save Changes" : "Save Transaction"}</button>
+                <DialogClose render={<button type="button" className="h-12 flex-1 rounded-full border border-[#CBD5D2] type-body font-semibold text-[#11201E] cursor-pointer">Cancel</button>} />
+                <button type="button" onClick={handleSave} className="h-12 flex-[1.4] rounded-full bg-[#0E7C6B] hover:bg-[#0A6B5C] type-body font-semibold text-white cursor-pointer">{transaction ? "Save Changes" : "Save Transaction"}</button>
             </div>
         </>
     )
