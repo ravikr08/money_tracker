@@ -4,15 +4,14 @@ import {
   DEFAULT_INITIAL_FILTERS,
   DEFAULT_SUBCATEGORIES_MAP,
 } from "./category.constants";
-import type {
-  Category,
-  SubCategoryMap,
-} from "./category.model";
+import type { Category, SubCategoryMap } from "./category.model";
 
 // copies so the default constants themselves don't get frozen by immer
 const initialState = {
   categories: DEFAULT_CATEGORIES.map((cat) => ({ ...cat })) as Category[],
-  subcategoriesMap: structuredClone(DEFAULT_SUBCATEGORIES_MAP) as SubCategoryMap,
+  subcategoriesMap: structuredClone(
+    DEFAULT_SUBCATEGORIES_MAP,
+  ) as SubCategoryMap,
   filters: DEFAULT_INITIAL_FILTERS,
 };
 
@@ -27,58 +26,76 @@ const categorySlice = createSlice({
       state.categories.unshift(newCat);
     },
     categoryUpdated(state, action) {
-      const { updatedCat, id} = action.payload;
+      const { updatedCat, id } = action.payload;
       state.categories = state.categories.map((el) =>
-        el.id !== id ? el : {...el,...updatedCat},
+        el.id !== id ? el : { ...el, ...updatedCat },
       );
     },
-    categoriesArchived(state,action){
+    categoriesArchived(state, action) {
       const ids = new Set(action.payload.ids);
-      state.categories.forEach(category=>{
+      state.categories.forEach((category) => {
         if (ids.has(category.id)) {
-          category.status = "archived"
+          category.status = "archived";
         }
-      })
+      });
     },
-    categoriesRestored(state,action){
+    categoriesRestored(state, action) {
       const ids = new Set(action.payload.ids);
-      state.categories.forEach(category=>{
+      state.categories.forEach((category) => {
         if (ids.has(category.id)) {
-          category.status = "active"
+          category.status = "active";
         }
-      })
+      });
+    },
+    categoriesRemoved(state, action) {
+      const ids = new Set(action.payload.ids);
+      state.categories.forEach((category) => {
+        if (ids.has(category.id)) {
+          category.status = "deleted";
+        }
+      });
     },
     // subcategory
     subCategoryAdded(state, action) {
       const { newSubCat } = action.payload;
-      if(state.subcategoriesMap[newSubCat.categoryId]){
+      if (state.subcategoriesMap[newSubCat.categoryId]) {
         state.subcategoriesMap[newSubCat.categoryId].unshift(newSubCat);
-      }else{
+      } else {
         state.subcategoriesMap[newSubCat.categoryId] = [newSubCat];
       }
     },
     subCategoryUpdated(state, action) {
       const { updatedSubCat, id, categoryId } = action.payload;
-      state.subcategoriesMap[categoryId] = state.subcategoriesMap[categoryId].map((el) => (el.id !== id ? el : {...el,...updatedSubCat}));
+      state.subcategoriesMap[categoryId] = state.subcategoriesMap[
+        categoryId
+      ].map((el) => (el.id !== id ? el : { ...el, ...updatedSubCat }));
     },
 
-     subcategoriesArchived(state,action){
+    subcategoryArchived(state, action) {
       const id = action.payload.id;
       const catid = action.payload.catId;
-      state.subcategoriesMap[catid].forEach(subcat=>{
+      state.subcategoriesMap[catid].forEach((subcat) => {
         if (id === subcat.id) {
-          subcat.status = "archived"
+          subcat.status = "archived";
         }
-      })
+      });
     },
-    subcategoriesRestored(state,action){
+    subcategoryRestored(state, action) {
       const id = action.payload.id;
       const catid = action.payload.catId;
-      state.subcategoriesMap[catid].forEach(subcat=>{
+      state.subcategoriesMap[catid].forEach((subcat) => {
         if (id === subcat.id) {
-          subcat.status = "active"
+          subcat.status = "active";
         }
-      })
+      });
+    },
+    subcategoryRemoved(state, action) {
+      const { id, catId } = action.payload;
+      state.subcategoriesMap[catId].forEach((subcat) => {
+        if (id === subcat.id) {
+          subcat.status = "deleted";
+        }
+      });
     },
 
     // filter
@@ -94,10 +111,12 @@ export const {
   categoryUpdated,
   categoriesArchived,
   categoriesRestored,
+  categoriesRemoved,
   subCategoryAdded,
   subCategoryUpdated,
-  subcategoriesArchived,
-  subcategoriesRestored,
+  subcategoryArchived,
+  subcategoryRestored,
+  subcategoryRemoved,
   filtersUpdated,
 } = categorySlice.actions;
 

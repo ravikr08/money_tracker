@@ -1,5 +1,10 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { selectCategoryNames, selectTransactions } from "@/modules/transactions/transactions.selectors";
+import { transactionServices } from "@/modules/transactions/transaction.services";
+import { parseLocalDate } from "@/modules/transactions/transactions.utils";
+import { KINDS } from "@/modules/transactions/components/TransactionRow";
 import { Archive, ArrowLeftRight, CreditCard, PencilLine, RotateCcw, X } from "lucide-react";
 import type { RootState } from "@/app/app.store";
 import { Drawer, DrawerClose, DrawerContent, DrawerTitle } from "@/shared/components/ui/drawer"
@@ -69,19 +74,57 @@ function InfoList({ title, rows }: { title: string, rows: { label: string, value
     )
 }
 
-// only the empty state for now, the real list comes with the transactions module
-function RecentTransactions() {
+const RECENT_COUNT = 10;
+
+// the last few transactions of this account or card, newest first. an empty box when there are none
+function RecentTransactions({ accountId }: { accountId: string }) {
+    const navigate = useNavigate();
+    const transactions = useSelector(selectTransactions);
+    const categoryNames = useSelector(selectCategoryNames);
+
+    const recent = useMemo(() => transactions
+        .filter(t => !t.isDeleted && (t.fromAccountId === accountId || t.toAccountId === accountId))
+        .sort((a, b) => parseLocalDate(b.transactionDate).getTime() - parseLocalDate(a.transactionDate).getTime() || b.createdAt.localeCompare(a.createdAt))
+        .slice(0, RECENT_COUNT), [transactions, accountId]);
+
+    // "View all" opens the transactions page with this account already picked in its filter
+    function handleViewAll() {
+        transactionServices.updateFilters({ accountId });
+        ACCOUNTS_DRAWER_HANDLE.close();
+        navigate("/transactions");
+    }
+
     return (
         <section>
             <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-semibold text-[#11142B]">Recent transactions</h4>
-                <button type="button" className="text-[13px] font-semibold text-[#2A3BC4] cursor-pointer">View all</button>
+                {recent.length > 0 && <button type="button" onClick={handleViewAll} className="text-[13px] font-semibold text-[#2A3BC4] cursor-pointer">View all</button>}
             </div>
-            <div className="rounded-[20px] border border-dashed border-[#D5DAF0] px-4 py-6 flex flex-col items-center text-center gap-1">
-                <span className="size-10 grid place-items-center rounded-full bg-[#E6EAFF] text-[#2A3BC4] mb-2"><ArrowLeftRight size={18} strokeWidth={1.8} /></span>
-                <p className="text-sm font-semibold text-[#11142B]">No transactions yet</p>
-                <p className="text-[13px] text-slate">Transactions you record will appear here.</p>
-            </div>
+            {recent.length === 0
+                ? <div className="rounded-[20px] border border-dashed border-[#D5DAF0] px-4 py-6 flex flex-col items-center text-center gap-1">
+                    <span className="size-10 grid place-items-center rounded-full bg-[#E6EAFF] text-[#2A3BC4] mb-2"><ArrowLeftRight size={18} strokeWidth={1.8} /></span>
+                    <p className="text-sm font-semibold text-[#11142B]">No transactions yet</p>
+                    <p className="text-[13px] text-slate">Transactions you record will appear here.</p>
+                </div>
+                : <ul className="rounded-[20px] border border-[#E6E9F4] overflow-hidden">
+                    {recent.map(t => {
+                        const kind = KINDS[t.type];
+                        const Icon = kind.icon;
+                        // seen from this account: money going out of it is minus, money coming in is plus
+                        const isOut = t.fromAccountId === accountId;
+                        const date = parseLocalDate(t.transactionDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+                        return (
+                            <li key={t.id} className="flex items-center gap-3 px-4 py-3 border-b border-[#EEF0F7] last:border-b-0">
+                                <span className={cn("size-10 shrink-0 grid place-items-center rounded-xl", kind.tile)}><Icon size={18} strokeWidth={2} /></span>
+                                <span className="flex-1 min-w-0 flex flex-col">
+                                    <span className="text-sm font-semibold text-[#11142B] truncate">{t.title ?? categoryNames[t.categoryId]}</span>
+                                    <span className="text-xs text-slate truncate">{categoryNames[t.categoryId]} · {date}</span>
+                                </span>
+                                <b className={cn("shrink-0 text-sm", isOut ? "text-[#11142B]" : "text-[#0B7A4B]")}>{isOut ? "−" : "+"}{formatCurrency(t.amount)}</b>
+                            </li>
+                        )
+                    })}
+                </ul>}
         </section>
     )
 }
@@ -141,7 +184,7 @@ function AccountDetails({ id }: { id: string }) {
                     { label: "Status", value: isActive ? "Active" : "Archived" },
                 ]} />
 
-                <RecentTransactions />
+                <RecentTransactions accountId={id} />
             </PanelBody>
             <PanelFooter kind="account" id={id} isActive={isActive} onStatusChange={() => accountsServices.setAccountStatus(id, isActive ? "archived" : "active")} />
         </>
@@ -188,7 +231,7 @@ function CreditCardDetails({ id }: { id: string }) {
                     { label: "Status", value: isActive ? "Active" : "Archived" },
                 ]} />
 
-                <RecentTransactions />
+                <RecentTransactions accountId={id} />
             </PanelBody>
             <PanelFooter kind="credit-card" id={id} isActive={isActive} onStatusChange={() => accountsServices.setCreditCardStatus(id, isActive ? "archived" : "active")} />
         </>

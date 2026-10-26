@@ -1,7 +1,10 @@
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, TrendingUp } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { PLACEHOLDER_RANGE, PLACEHOLDER_SUMMARY } from "../transactions.placeholder";
+import { useSelector } from "react-redux";
+import { formatCurrency } from "@/shared/utils/utils";
+import { selectPeriodRangeLabel, selectTransactionSummary } from "../transactions.selectors";
+import { formatSigned } from "../transactions.utils";
 
 type SummaryCardProps = {
     title: string;
@@ -27,10 +30,17 @@ function SummaryCard({ title, value, caption, icon: Icon, iconClass, valueClass,
     )
 }
 
-// the numbers are placeholders for now
+// the numbers are of the transactions the filters give
 // phone: one dark card with three small boxes. tablet and desktop: four cards
 export default function TransactionsSummary() {
-    const s = PLACEHOLDER_SUMMARY;
+    const summary = useSelector(selectTransactionSummary);
+    const range = useSelector(selectPeriodRangeLabel);
+    const s = {
+        income: { value: "+" + formatCurrency(summary.income), caption: range },
+        expense: { value: "−" + formatCurrency(summary.expense), caption: "Transfers excluded" },
+        net: { value: formatSigned(summary.net), caption: "Income − expense" },
+        count: { value: String(summary.count), caption: "In this period" },
+    };
     return (
         <>
             <section aria-label="Summary" className="md:hidden flex flex-col gap-2.5 px-[18px] py-4 rounded-[22px] bg-[#0B1F1C] text-white">
@@ -39,7 +49,7 @@ export default function TransactionsSummary() {
                         <span className="text-xs font-semibold tracking-[0.06em] text-white/70">NET CASH FLOW</span>
                         <b className="text-[30px] leading-9 font-bold tracking-tight">{s.net.value}</b>
                     </div>
-                    <span className="text-xs text-white/70 text-right">{PLACEHOLDER_RANGE}</span>
+                    <span className="text-xs text-white/70 text-right">{range}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                     <div className="flex flex-col gap-0.5 px-3 py-2.5 rounded-[14px] bg-white/8">

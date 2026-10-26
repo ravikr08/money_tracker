@@ -41,11 +41,11 @@ export function CategoryDialogBox() {
 
 
 
-type DraftType = { origin: "custom" | "default", data: CategoryInputValues, res?: { success: boolean, error?: string, message?: string } }
+type DraftType = { data: CategoryInputValues, res?: { success: boolean, error?: string, message?: string } }
 
 function getDraftData(payload: CategoryDialogPayload): DraftType {
   if (payload.mode === "create") {
-    return { origin: "custom", data: createInitialCategory() }
+    return { data: createInitialCategory() }
   } else {
     const category = categoryServices.getCategoryById(payload.id)
     const draftData = {
@@ -54,7 +54,7 @@ function getDraftData(payload: CategoryDialogPayload): DraftType {
       icon: category.icon,
       type: category.type
     }
-    return { origin: category.origin, data: draftData }
+    return { data: draftData }
   }
 }
 
@@ -83,9 +83,6 @@ function CategoryDialogBoxContent({ payload }: { payload: CategoryDialogPayload 
     <DialogHeader>
       <DialogTitle>{(payload.mode === "edit" ? "Edit" : "New") + " " + "Category"}</DialogTitle>
       <DialogDescription>Categories organise your transactions into meaningful groups.</DialogDescription>
-      {(draft.origin === "default") && <DialogDescription className={"bg-amber-50 p-2 rounded-sm"}>
-        🔒 This is a default category — its name and type are fixed, but you can still change its icon, colour, or archive it.
-      </DialogDescription>}
     </DialogHeader>
     <CategoryDialogBoxFields draft={draft} setDraft={setDraft} />
     <DialogFooter className="bg-white">
@@ -115,12 +112,12 @@ function CategoryDialogBoxFields({ draft, setDraft }: propsType) {
     <FieldGroup>
       <Field>
         <Label className="text-slate">Name</Label>
-        <Input disabled={draft.origin === "default"} aria-disabled={draft.origin === "default"} name="name" placeholder="e.g Food & Dining" className="rounded-sm shadow-none ring-0 focus-visible:ring-0 px-3 py-5 disabled:cursor-not-allowed aria-disabled:cursor-not-allowed" value={draft.data.name} onChange={(e) => handleFieldValueChange('name', e.target.value)} required={true} />
+        <Input name="name" placeholder="e.g Food & Dining" className="rounded-sm shadow-none ring-0 focus-visible:ring-0 px-3 py-5 disabled:cursor-not-allowed aria-disabled:cursor-not-allowed" value={draft.data.name} onChange={(e) => handleFieldValueChange('name', e.target.value)} required={true} />
         {draft.res?.error && <span className={"bg-red-0 text-red-500 text-right rounded-sm"}>{draft.res.error}</span>}
       </Field>
       <Field>
         <Label className="text-slate">Transaction Type</Label>
-        <TabMenu tabs={[{ value: "expense", label: "Expense" }, { value: "income", label: "Income" }]} selectedTab={draft.data.type} onTabChange={(newVal: CategoryTypes) => handleFieldValueChange("type", newVal)} bgClass="bg-blue-soft rounded-sm w-full py-5.5" btnActiveClass="rounded-sm py-4" disabled={draft.origin === "default"} />
+        <TabMenu tabs={[{ value: "expense", label: "Expense" }, { value: "income", label: "Income" }]} selectedTab={draft.data.type} onTabChange={(newVal: CategoryTypes) => handleFieldValueChange("type", newVal)} bgClass="bg-blue-soft rounded-sm w-full py-5.5" btnActiveClass="rounded-sm py-4" />
       </Field>
       <Field>
         <Label className="text-slate">Color</Label>

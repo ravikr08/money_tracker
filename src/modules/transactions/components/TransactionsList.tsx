@@ -1,20 +1,63 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PLACEHOLDER_GROUPS, PLACEHOLDER_REMAINING, PLACEHOLDER_SHOWING } from "../transactions.placeholder";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { ROW_COLUMNS } from "./TransactionRow";
 import TransactionGroup from "./TransactionGroup";
+import { selectTransactionGroups } from "../transactions.selectors";
+import { transactionServices } from "../transaction.services";
+import type { TransactionGroupData } from "../transactions.utils";
 
-function LoadMoreButton() {
+const PAGE_SIZE = 10;
+
+// the first `limit` rows, cut at the group borders (the last group can be cut in the middle)
+function limitGroups(groups: TransactionGroupData[], limit: number) {
+    let left = limit;
+    const result: TransactionGroupData[] = [];
+    for (const group of groups) {
+        if (left <= 0) break;
+        result.push(group.rows.length <= left ? group : { ...group, rows: group.rows.slice(0, left) });
+        left -= group.rows.length;
+    }
+    return result;
+}
+
+function LoadMoreButton({ remaining, onClick }: { remaining: number, onClick: () => void }) {
+    if (remaining <= 0) return null;
     return (
-        <button type="button" className="h-12 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] bg-white text-sm font-semibold text-[#11201E] cursor-pointer">
-            Load more <span className="font-medium text-[#5A6B68]">· {PLACEHOLDER_REMAINING}</span>
+        <button type="button" onClick={onClick} className="h-12 flex items-center justify-center gap-2 rounded-full border border-[#CBD5D2] bg-white text-sm font-semibold text-[#11201E] cursor-pointer">
+            Load more <span className="font-medium text-[#5A6B68]">· {remaining} more</span>
         </button>
     )
 }
 
-// the list of days. UI only, the buttons do nothing yet
+function EmptyState() {
+    return (
+        <div className="flex flex-col items-center gap-3 px-5 py-14 text-center">
+            <b className="text-base text-[#11201E]">No transactions found</b>
+            <span className="text-sm text-[#5A6B68]">Nothing matches the filters you picked.</span>
+            <button type="button" onClick={() => transactionServices.resetFilters()} className="h-11 px-5 rounded-full border border-[#CBD5D2] bg-white text-sm font-semibold text-[#11201E] cursor-pointer">Reset filters</button>
+        </div>
+    )
+}
+
+// the list of days (or weeks, or months, depending on the view)
 // phone: blocks on the page and a "load more" button. tablet: one white table with "load more" and the count at the bottom.
-// desktop: the same table with a header and page buttons at the bottom
+// desktop: the same table with a header, the count and "load more" at the bottom
 export default function TransactionList(){
+    const groups = useSelector(selectTransactionGroups);
+    const [limit, setLimit] = useState(PAGE_SIZE);
+
+    // a new filter gives a new list, start from the first page again
+    const [seenGroups, setSeenGroups] = useState(groups);
+    if (seenGroups !== groups) {
+        setSeenGroups(groups);
+        setLimit(PAGE_SIZE);
+    }
+
+    const total = groups.reduce((sum, group) => sum + group.rows.length, 0);
+    const shown = Math.min(limit, total);
+    const remaining = total - shown;
+    const loadMore = () => setLimit(prev => prev + PAGE_SIZE);
+
     return(
         <section className="flex flex-col gap-4 md:gap-0 md:rounded-3xl md:bg-white md:overflow-x-auto">
             <div className="flex flex-col gap-4 md:gap-0 xl:min-w-[960px]">
@@ -28,27 +71,24 @@ export default function TransactionList(){
                     <span></span>
                 </div>
 
-                {PLACEHOLDER_GROUPS.map(group => <TransactionGroup key={group.label} group={group} />)}
+                {total === 0 ? <EmptyState /> : limitGroups(groups, limit).map(group => <TransactionGroup key={group.key} group={group} />)}
 
-                {/* phone */}
-                <div className="md:hidden flex flex-col"><LoadMoreButton /></div>
+                {total > 0 && <>
+                    {/* phone */}
+                    <div className="md:hidden flex flex-col"><LoadMoreButton remaining={remaining} onClick={loadMore} /></div>
 
-                {/* tablet */}
-                <div className="hidden md:flex xl:hidden flex-col gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
-                    <LoadMoreButton />
-                    <span className="text-center text-[13px] text-[#5A6B68]">{PLACEHOLDER_SHOWING}</span>
-                </div>
-
-                {/* desktop */}
-                <div className="hidden xl:flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
-                    <span className="text-[13px] text-[#5A6B68]">{PLACEHOLDER_SHOWING}</span>
-                    <div className="flex items-center gap-1.5">
-                        <button type="button" aria-label="Previous page" className="size-10 grid place-items-center rounded-full border border-[#E1E8E6] bg-white text-[#5A6B68] cursor-pointer"><ChevronLeft size={18} /></button>
-                        <button type="button" aria-label="Page 1" aria-current="page" className="min-w-10 h-10 px-2 rounded-full bg-[#0B1F1C] text-white text-sm font-semibold cursor-pointer">1</button>
-                        <button type="button" aria-label="Page 2" className="min-w-10 h-10 px-2 rounded-full text-[#11201E] text-sm font-semibold cursor-pointer">2</button>
-                        <button type="button" aria-label="Next page" className="size-10 grid place-items-center rounded-full border border-[#E1E8E6] bg-white text-[#5A6B68] cursor-pointer"><ChevronRight size={18} /></button>
+                    {/* tablet */}
+                    <div className="hidden md:flex xl:hidden flex-col gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
+                        <LoadMoreButton remaining={remaining} onClick={loadMore} />
+                        <span className="text-center text-[13px] text-[#5A6B68]">Showing {shown} of {total}</span>
                     </div>
-                </div>
+
+                    {/* desktop */}
+                    <div className="hidden xl:flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-t border-[#EEF2F0]">
+                        <span className="text-[13px] text-[#5A6B68]">Showing {shown} of {total}</span>
+                        <div className="w-60"><LoadMoreButton remaining={remaining} onClick={loadMore} /></div>
+                    </div>
+                </>}
             </div>
         </section>
     )

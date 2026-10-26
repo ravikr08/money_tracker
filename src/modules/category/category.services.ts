@@ -1,15 +1,5 @@
 import { appStore } from "@/app/app.store";
-import {
-  categoryAdded,
-  categoryUpdated,
-  subCategoryAdded,
-  subCategoryUpdated,
-  filtersUpdated,
-  categoriesArchived,
-  categoriesRestored,
-  subcategoriesArchived,
-  subcategoriesRestored,
-} from "./category.slice";
+import * as categoryActions from "./category.slice";
 import type {
   Category,
   CategoryInputValues,
@@ -17,9 +7,7 @@ import type {
   SubCategory,
   SubcategoryInputValues,
 } from "./category.model";
-
-
-
+import { isUniqueName } from "@/shared/utils/utils";
 
 const categoryStore = {
   get() {
@@ -69,25 +57,11 @@ export const categoryServices = {
 
   // validation
   isUniqueCategoryName(name: string, id: string) {
-    let res = !this.getAllCategories().some(
-      (cat) => {
-        return cat.name.trim().toLowerCase() === name.trim().toLowerCase() && cat.id !== id
-      }
-    );
-    return res;
-
+    return isUniqueName(name, this.getAllCategories(), id);
   },
 
   isUniqueSubcategoryInCategory(name: string, catId: string, id: string) {
-    const subcategoriesArr = this.getSubCategoriesByCategory(catId);
-    if (!subcategoriesArr || !subcategoriesArr.length) {
-      return true;
-    }
-    return !subcategoriesArr.some(
-      (subcat) => {
-        return subcat.name.trim().toLowerCase() === name.trim().toLowerCase() && subcat.id !== id
-      },
-    );
+    return isUniqueName(name, this.getSubCategoriesByCategory(catId), id);
   },
 
   // category
@@ -104,10 +78,11 @@ export const categoryServices = {
       ...categoryObject,
       id: id,
       status: "active",
-      origin: "custom",
     };
 
-    categoryStore.dispatch(categoryAdded({ newCat: categoryObj }));
+    categoryStore.dispatch(
+      categoryActions.categoryAdded({ newCat: categoryObj }),
+    );
 
     return {
       success: true,
@@ -123,7 +98,9 @@ export const categoryServices = {
       };
     }
 
-    categoryStore.dispatch(categoryUpdated({ updatedCat: categoryObject, id: id }));
+    categoryStore.dispatch(
+      categoryActions.categoryUpdated({ updatedCat: categoryObject, id: id }),
+    );
     return {
       success: true,
       message: "Category updated successfully.",
@@ -131,14 +108,18 @@ export const categoryServices = {
   },
 
   archiveCategories(catId: string[]) {
-    categoryStore.dispatch(categoriesArchived({ ids: catId }));
+    categoryStore.dispatch(categoryActions.categoriesArchived({ ids: catId }));
   },
 
-  restoreCategories(catId:string[]){
-    categoryStore.dispatch(categoriesRestored({ids: catId}));
+  restoreCategories(catId: string[]) {
+    categoryStore.dispatch(categoryActions.categoriesRestored({ ids: catId }));
   },
 
-  // will be implemented 
+  deleteCategories(catId: string[]) {
+    categoryStore.dispatch(categoryActions.categoriesRemoved({ ids: catId }));
+  },
+
+  // will be implemented
   // deleteCategories(id)
   //       ↓
   // transactionService.isCategoryUsed(id)
@@ -166,10 +147,11 @@ export const categoryServices = {
       id: id,
       categoryId: categoryId,
       status: "active",
-      origin: "custom",
     };
 
-    categoryStore.dispatch(subCategoryAdded({ newSubCat: subcatObj }));
+    categoryStore.dispatch(
+      categoryActions.subCategoryAdded({ newSubCat: subcatObj }),
+    );
 
     return {
       success: true,
@@ -177,34 +159,41 @@ export const categoryServices = {
     };
   },
 
-  updateSubcategory(subcatObject: SubcategoryInputValues, id: string, catId: string) {
-
-    if (
-      !this.isUniqueSubcategoryInCategory(
-        subcatObject.name,
-        catId,
-        id,
-      )
-    ) {
+  updateSubcategory(
+    subcatObject: SubcategoryInputValues,
+    id: string,
+    catId: string,
+  ) {
+    if (!this.isUniqueSubcategoryInCategory(subcatObject.name, catId, id)) {
       return {
         success: false,
         error: "Subcategory name already exist in this category",
       };
     }
 
-    categoryStore.dispatch(subCategoryUpdated({ updatedSubCat: subcatObject, id: id, categoryId: catId }));
+    categoryStore.dispatch(
+      categoryActions.subCategoryUpdated({
+        updatedSubCat: subcatObject,
+        id: id,
+        categoryId: catId,
+      }),
+    );
     return {
       success: true,
       message: "Subcategory updated successfully.",
     };
   },
 
-  archiveSubcategories(id:string,catId:string) {
-    categoryStore.dispatch(subcategoriesArchived({ id, catId }));
+  archiveSubcategory(id: string, catId: string) {
+    categoryStore.dispatch(categoryActions.subcategoryArchived({ id, catId }));
   },
 
-  restoreSubcategories(id:string,catId:string){
-    categoryStore.dispatch(subcategoriesRestored({id,catId}));
+  restoreSubcategory(id: string, catId: string) {
+    categoryStore.dispatch(categoryActions.subcategoryRestored({ id, catId }));
+  },
+
+  deleteSubcategory(id: string, catId: string) {
+    categoryStore.dispatch(categoryActions.subcategoryRemoved({ id, catId }));
   },
 
   // filters
@@ -213,6 +202,6 @@ export const categoryServices = {
   },
 
   updateFilters(obj: Partial<InitFiltersValues>) {
-    categoryStore.dispatch(filtersUpdated({ updates: obj }));
+    categoryStore.dispatch(categoryActions.filtersUpdated({ updates: obj }));
   },
 };

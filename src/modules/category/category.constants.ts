@@ -4,7 +4,6 @@ import type {
   Category,
   CategoryDialogPayload,
   InitFiltersValues,
-  OriginFilterValues,
   StatusFilterValues,
   SubCategory,
   SubcategoryDialogPayload,
@@ -20,7 +19,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "briefcase",
     color: "#22C55E",
     type: "income",
-    origin: "default",
     status: "active",
   },
   {
@@ -29,7 +27,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "laptop",
     color: "#3B82F6",
     type: "income",
-    origin: "default",
     status: "active",
   },
   {
@@ -38,7 +35,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "trending-up",
     color: "#8B5CF6",
     type: "income",
-    origin: "default",
     status: "active",
   },
   {
@@ -47,7 +43,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "gift",
     color: "#EC4899",
     type: "income",
-    origin: "custom",
     status: "active",
   },
   {
@@ -56,7 +51,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "rotate-ccw",
     color: "#14B8A6",
     type: "income",
-    origin: "custom",
     status: "archived",
   },
   {
@@ -65,7 +59,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "utensils",
     color: "#F97316",
     type: "expense",
-    origin: "default",
     status: "active",
   },
   {
@@ -74,7 +67,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "car-front",
     color: "#0EA5E9",
     type: "expense",
-    origin: "default",
     status: "active",
   },
   {
@@ -83,7 +75,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "shopping-bag",
     color: "#EC4899",
     type: "expense",
-    origin: "default",
     status: "active",
   },
   {
@@ -92,7 +83,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "heart",
     color: "#EF4444",
     type: "expense",
-    origin: "default",
     status: "active",
   },
   {
@@ -101,7 +91,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "clapperboard",
     color: "#A855F7",
     type: "expense",
-    origin: "default",
     status: "active",
   },
   {
@@ -110,7 +99,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "book",
     color: "#6366F1",
     type: "expense",
-    origin: "custom",
     status: "active",
   },
   {
@@ -119,7 +107,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "dog",
     color: "#84CC16",
     type: "expense",
-    origin: "custom",
     status: "archived",
   },
   {
@@ -128,7 +115,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "refresh-cw",
     color: "#64748B",
     type: "transfer",
-    origin: "default",
     status: "active",
   },
   {
@@ -137,7 +123,6 @@ export const DEFAULT_CATEGORIES: Category[] = [
     icon: "credit-card",
     color: "#F59E0B",
     type: "payment",
-    origin: "default",
     status: "active",
   },
 ];
@@ -147,21 +132,18 @@ export const DEFAULT_SUBCATEGORIES_MAP: Record<string, SubCategory[]> = {
     {
       id: "65b8050c-6569-4361-983d-244d245594dc",
       name: "Groceries",
-      origin: "default",
       status: "active",
       categoryId: "c1670173-8159-4407-a78e-a504128c1209",
     },
     {
       id: "8b78e9ff-9164-4516-895f-81b47eccba18",
       name: "Restaurants",
-      origin: "default",
       status: "active",
       categoryId: "c1670173-8159-4407-a78e-a504128c1209",
     },
     {
       id: "0ba2c292-ef93-414e-908a-48f36af59dc3",
       name: "Snacks",
-      origin: "custom",
       status: "active",
       categoryId: "c1670173-8159-4407-a78e-a504128c1209",
     },
@@ -171,21 +153,18 @@ export const DEFAULT_SUBCATEGORIES_MAP: Record<string, SubCategory[]> = {
     {
       id: "afcf52cb-76be-45ed-9c13-28c4e6e5078f",
       name: "Fuel",
-      origin: "default",
       status: "active",
       categoryId: "89399fec-c535-4046-912e-ca589b6c8698",
     },
     {
       id: "d3d79516-20d4-4b29-be03-8b3abbd81f15",
       name: "Cab",
-      origin: "custom",
       status: "archived",
       categoryId: "89399fec-c535-4046-912e-ca589b6c8698",
     },
     {
       id: "a9fdfa41-efa4-42f9-b5fb-64a1e8a776ee",
       name: "Bus / Train",
-      origin: "default",
       status: "archived",
       categoryId: "89399fec-c535-4046-912e-ca589b6c8698",
     },
@@ -232,14 +211,6 @@ export const CATEGORY_TYPE_FILTER_OPTIONS: {
   { value: "income", label: "Income" },
   { value: "expense", label: "Expense" },
 ];
-export const CATEGORY_ORIGIN_FILTER_OPTIONS: {
-  value: OriginFilterValues;
-  label: string;
-}[] = [
-  { value: "all", label: "All origins" },
-  { value: "default", label: "Default" },
-  { value: "custom", label: "Custom" },
-];
 export const CATEGORY_STATUS_FILTER_OPTIONS: {
   value: StatusFilterValues;
   label: string;
@@ -251,7 +222,6 @@ export const CATEGORY_STATUS_FILTER_OPTIONS: {
 
 export const DEFAULT_INITIAL_FILTERS: InitFiltersValues = {
   type: "all",
-  origin: "all",
   status: "active",
 };
 

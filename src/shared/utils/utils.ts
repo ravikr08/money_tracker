@@ -37,3 +37,13 @@ export function getColorShades(color: string) {
     ink: `color-mix(in srgb, ${color} 62%, black)`,
   };
 }
+
+// true if no other item in the list uses this name (ignores case and spaces)
+// id is the item being saved, so editing an item doesn't clash with itself
+// the caller decides which items count, e.g. subcategories of one category only
+export function isUniqueName(name: string, items: { id: string; name: string }[], id: string) {
+  const newName = name.trim().toLowerCase();
+  return !items.some(
+    (el) => el.name.trim().toLowerCase() === newName && el.id !== id,
+  );
+}

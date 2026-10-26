@@ -11,19 +11,15 @@ const BADGES: { value: number; label: string; color: string }[] = [
     { value: 0, label: "categories total", color: "" },
     { value: 0, label: "active", color: "green" },
     { value: 0, label: "archived", color: "coral" },
-    { value: 0, label: "default", color: "ink-soft" },
-    { value: 0, label: "custom", color: "blue" },
 ];
 export default function CategoryPage() {
     const [selected, setSeleted] = useState<string[]>([]);
-    const categories:Category[] = useSelector(state=>state.categorySlice.categories)
-    BADGES.forEach(el=>{
-        if(el.label === "categories total"){
-            el.value = categories.length;
-        }else if (el.label === "active" || el.label === "archived"){
-            el.value = categories.filter((cat:Category)=> cat.status.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
-        }else{
-            el.value = categories.filter((cat:Category)=> cat.origin.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
+    const categories: Category[] = useSelector(state => state.categorySlice.categories)
+    BADGES.forEach(el => {
+        if (el.label === "categories total") {
+            el.value = categories.filter(cat => cat.status !== "deleted").length;
+        } else {
+            el.value = categories.filter((cat: Category) => cat.status.trim().toLowerCase() === el.label.trim().toLowerCase()).length;
         }
     })
     return (
@@ -48,10 +44,10 @@ export default function CategoryPage() {
                     </Badge>
                 ))}
             </div>
-            <CategoryFilters selected={selected} setSelected={setSeleted}/>
+            <CategoryFilters selected={selected} setSelected={setSeleted} />
             <CategoryList setSelected={setSeleted} selected={selected} />
             <CategoryDialogBox />
-            <SubcategoryDialogBox/>
+            <SubcategoryDialogBox />
         </div>
     );
 }

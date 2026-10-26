@@ -1,27 +1,26 @@
 export type CategoryTypes = "income" | "expense";
 
-  export type Category =  {
+export type Category = {
   name: string;
   icon: string;
   type: CategoryTypes;
   color: string;
   id: string;
-  origin: "default" | "custom";
-  status: "active" | "archived";
+  status: "active" | "archived" | "deleted";
 };
 
 export type SubCategory = {
   name: string;
   id: string;
-  origin: "default" | "custom";
-  status: "active" | "archived";
+  status: "active" | "archived" | "deleted";
   categoryId: string;
 };
-export type CategoryInputValues = Pick<Category, "name"|"icon"|"color"|"type">
-export type SubcategoryInputValues = Pick<Category, "name">
+export type CategoryInputValues = Pick<
+  Category,
+  "name" | "icon" | "color" | "type"
+>;
+export type SubcategoryInputValues = Pick<Category, "name">;
 export type TypeFilterValues = "all" | "income" | "expense";
-
-export type OriginFilterValues = "all" | "default" | "custom";
 
 export type StatusFilterValues = "all" | "active" | "archived";
 
@@ -29,7 +28,6 @@ export type SubCategoryMap = Record<string, SubCategory[]>;
 
 export type InitFiltersValues = {
   type: TypeFilterValues;
-  origin: OriginFilterValues;
   status: StatusFilterValues;
 };
 
@@ -51,10 +49,8 @@ export type CreateSubCategoryPayload = {
   categoryId: string;
 };
 
-export type CategoryDialogPayload =
-  | EditCategoryPayload
-  | CreateCategoryPayload
+export type CategoryDialogPayload = EditCategoryPayload | CreateCategoryPayload;
 
 export type SubcategoryDialogPayload =
   | EditSubCategoryPayload
-  | CreateSubCategoryPayload
+  | CreateSubCategoryPayload;

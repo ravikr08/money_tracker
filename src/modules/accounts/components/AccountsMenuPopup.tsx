@@ -1,7 +1,7 @@
 
 import { DrawerTrigger } from "@/shared/components/ui/drawer";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu"
-import { Archive, Ellipsis, Eye, PencilLine, RotateCcw } from "lucide-react";
+import { Archive, Trash2, Ellipsis, Eye, PencilLine, RotateCcw } from "lucide-react";
 import { ACCOUNTS_DIALOG_HANLDE, ACCOUNTS_DRAWER_HANDLE } from "../accounts.constants";
 import { DialogTrigger } from "@/shared/components/ui/dialog";
 import { accountsServices } from "../accounts.services";
@@ -22,6 +22,13 @@ export default function AccountsMenuPopup({ id, type, isActive }: AccountsMenuPo
             accountsServices.setCreditCardStatus(id, status);
         }
     }
+    function handleDelete() {
+        if (type === "account") {
+            accountsServices.setAccountStatus(id, "deleted");
+        } else {
+            accountsServices.setCreditCardStatus(id, "deleted");
+        }
+    }
 
     return (
         <DropdownMenu>
@@ -40,6 +47,11 @@ export default function AccountsMenuPopup({ id, type, isActive }: AccountsMenuPo
                 <DropdownMenuItem className={"p-0"} onClick={e => { e.stopPropagation(); handleStatusChange(); }}>
                     <span className="flex items-center gap-2 px-2.5 py-2 cursor-pointer hover:bg-blue-soft rounded-[7px] w-full">
                         {isActive ? <><Archive /> Archive</> : <><RotateCcw /> Restore</>}
+                    </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" className={"p-0"} onClick={e => { e.stopPropagation(); handleDelete(); }}>
+                    <span className="flex items-center gap-2 px-2.5 py-2 cursor-pointer hover:bg-red-soft rounded-[7px] w-full">
+                        {<><Trash2 /> Delete</>}
                     </span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

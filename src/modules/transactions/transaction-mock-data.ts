@@ -1,186 +1,59 @@
-import type { Transaction } from "./transaction.model";
-export const transactions: Transaction[] = [
-  {
-    id: "txn_001",
-    type: "income",
-    title: "Salary",
-    categoryId: "salary",
-    toAccountId: "hdfc_salary",
-    amount: 125000,
-    transactionDate: "2026-07-01",
-    note: "July salary",
-    isDeleted: false,
-    createdAt: "2026-07-01T09:00:00Z",
-    updatedAt: "2026-07-01T09:00:00Z",
-  },
-  {
-    id: "txn_002",
-    type: "expense",
-    title: "Rent",
-    categoryId: "housing",
-    fromAccountId: "hdfc_salary",
-    amount: 18000,
-    transactionDate: "2026-07-02",
-    isDeleted: false,
-    createdAt: "2026-07-02T09:00:00Z",
-    updatedAt: "2026-07-02T09:00:00Z",
-  },
-  {
-    id: "txn_003",
-    type: "expense",
-    title: "Swiggy",
-    categoryId: "food",
-    fromAccountId: "hdfc_salary",
-    amount: 520,
-    transactionDate: "2026-07-03",
-    isDeleted: false,
-    createdAt: "2026-07-03T09:00:00Z",
-    updatedAt: "2026-07-03T09:00:00Z",
-  },
-  {
-    id: "txn_004",
-    type: "expense",
-    title: "BigBasket",
-    categoryId: "groceries",
-    fromAccountId: "hdfc_salary",
-    amount: 1860,
-    transactionDate: "2026-07-04",
-    isDeleted: false,
-    createdAt: "2026-07-04T09:00:00Z",
-    updatedAt: "2026-07-04T09:00:00Z",
-  },
-  {
-    id: "txn_005",
-    type: "expense",
-    title: "Electricity Bill",
-    categoryId: "utilities",
-    fromAccountId: "hdfc_salary",
-    amount: 2450,
-    transactionDate: "2026-07-05",
-    isDeleted: false,
-    createdAt: "2026-07-05T09:00:00Z",
-    updatedAt: "2026-07-05T09:00:00Z",
-  },
-  {
-    id: "txn_006",
-    type: "transfer",
-    title: "Savings Transfer",
-    categoryId: "transfer",
-    fromAccountId: "hdfc_salary",
-    toAccountId: "sbi_savings",
-    amount: 30000,
-    transactionDate: "2026-07-05",
-    isDeleted: false,
-    createdAt: "2026-07-05T10:00:00Z",
-    updatedAt: "2026-07-05T10:00:00Z",
-  },
-  {
-    id: "txn_007",
-    type: "expense",
-    title: "Fuel",
-    categoryId: "transport",
-    fromAccountId: "hdfc_salary",
-    amount: 1800,
-    transactionDate: "2026-07-06",
-    isDeleted: false,
-    createdAt: "2026-07-06T09:00:00Z",
-    updatedAt: "2026-07-06T09:00:00Z",
-  },
-  {
-    id: "txn_008",
-    type: "expense",
-    title: "Amazon",
-    categoryId: "shopping",
-    fromAccountId: "hdfc_credit_card",
-    amount: 3499,
-    transactionDate: "2026-07-07",
-    isDeleted: false,
-    createdAt: "2026-07-07T09:00:00Z",
-    updatedAt: "2026-07-07T09:00:00Z",
-  },
-  {
-    id: "txn_009",
-    type: "expense",
-    title: "Movie",
-    categoryId: "entertainment",
-    fromAccountId: "hdfc_credit_card",
-    amount: 780,
-    transactionDate: "2026-07-08",
-    isDeleted: false,
-    createdAt: "2026-07-08T09:00:00Z",
-    updatedAt: "2026-07-08T09:00:00Z",
-  },
-  {
-    id: "txn_010",
-    type: "income",
-    title: "Freelance Payment",
-    categoryId: "freelance",
-    toAccountId: "sbi_savings",
-    amount: 15000,
-    transactionDate: "2026-07-10",
-    isDeleted: false,
-    createdAt: "2026-07-10T09:00:00Z",
-    updatedAt: "2026-07-10T09:00:00Z",
-  },
-  {
-    id: "txn_011",
-    type: "expense",
-    title: "Gym Membership",
-    categoryId: "health",
-    fromAccountId: "hdfc_salary",
-    amount: 1500,
-    transactionDate: "2026-07-11",
-    isDeleted: false,
-    createdAt: "2026-07-11T09:00:00Z",
-    updatedAt: "2026-07-11T09:00:00Z",
-  },
-  {
-    id: "txn_012",
-    type: "expense",
-    title: "Mobile Recharge",
-    categoryId: "utilities",
-    fromAccountId: "hdfc_salary",
-    amount: 799,
-    transactionDate: "2026-07-12",
-    isDeleted: false,
-    createdAt: "2026-07-12T09:00:00Z",
-    updatedAt: "2026-07-12T09:00:00Z",
-  },
-  {
-    id: "txn_013",
-    type: "expense",
-    title: "Netflix",
-    categoryId: "subscriptions",
-    fromAccountId: "hdfc_credit_card",
-    amount: 649,
-    transactionDate: "2026-07-13",
-    isDeleted: false,
-    createdAt: "2026-07-13T09:00:00Z",
-    updatedAt: "2026-07-13T09:00:00Z",
-  },
-  {
-    id: "txn_014",
-    type: "expense",
-    title: "Medicine",
-    categoryId: "health",
-    fromAccountId: "hdfc_salary",
-    amount: 960,
-    transactionDate: "2026-07-14",
-    isDeleted: false,
-    createdAt: "2026-07-14T09:00:00Z",
-    updatedAt: "2026-07-14T09:00:00Z",
-  },
-  {
-    id: "txn_015",
-    type: "transfer",
-    title: "Emergency Fund",
-    categoryId: "transfer",
-    fromAccountId: "hdfc_salary",
-    toAccountId: "emergency_fund",
-    amount: 10000,
-    transactionDate: "2026-07-15",
-    isDeleted: false,
-    createdAt: "2026-07-15T09:00:00Z",
-    updatedAt: "2026-07-15T09:00:00Z",
-  },
+import type { Transaction, TransactionTypes } from "./transaction.model";
+import { DEFAULT_CATEGORIES, DEFAULT_SUBCATEGORIES_MAP } from "@/modules/category/category.constants";
+
+// dummy transactions for now. the account ids are the ones in modules/accounts/accounts.dummy-data.ts,
+// the category ids are looked up by name so they always match the ones in category.constants.ts.
+// they add up to the numbers of the transactions design: income 85,340, expense 10,240, 14 in total
+
+const categoryId = (name: string) => DEFAULT_CATEGORIES.find((cat) => cat.name === name)!.id;
+const subCategoryId = (name: string) =>
+  Object.values(DEFAULT_SUBCATEGORIES_MAP).flat().find((sub) => sub.name === name)!.id;
+
+type Dummy = {
+  type: TransactionTypes;
+  title: string;
+  amount: number;
+  date: string; // yyyy-mm-dd
+  time: string; // hh:mm
+  category: string;
+  subcategory?: string;
+  from?: string;
+  to?: string;
+  note?: string;
+};
+
+const DUMMY: Dummy[] = [
+  { type: "income", title: "Salary · Acme Corp", amount: 72000, date: "2026-10-24", time: "09:05", category: "Salary", to: "acc-hdfc-savings", note: "October salary" },
+  { type: "expense", title: "Swiggy", amount: 486, date: "2026-10-24", time: "13:12", category: "Food", subcategory: "Restaurants", from: "cc-hdfc-millennia", note: "Team lunch" },
+  { type: "transfer", title: "Wallet top-up", amount: 5000, date: "2026-10-23", time: "11:20", category: "Transfer", from: "acc-hdfc-savings", to: "acc-phonepe" },
+  { type: "expense", title: "Uber", amount: 312, date: "2026-10-23", time: "20:40", category: "Transport", subcategory: "Cab", from: "acc-phonepe" },
+  { type: "expense", title: "Doctor consultation", amount: 1820, date: "2026-10-21", time: "10:15", category: "Healthcare", from: "acc-hdfc-savings" },
+  { type: "expense", title: "Amazon", amount: 2349, date: "2026-10-21", time: "18:02", category: "Shopping", from: "cc-amazon-pay", note: "Headphones" },
+  { type: "income", title: "Freelance payout", amount: 12500, date: "2026-10-19", time: "16:30", category: "Freelance", to: "acc-phonepe", note: "Logo project" },
+  { type: "expense", title: "Netflix", amount: 649, date: "2026-10-19", time: "07:00", category: "Entertainment", from: "cc-hdfc-millennia" },
+  { type: "expense", title: "BigBasket", amount: 1264, date: "2026-10-15", time: "18:45", category: "Food", subcategory: "Groceries", from: "acc-phonepe", note: "Weekly groceries" },
+  { type: "payment", title: "Card bill payment", amount: 3000, date: "2026-10-15", time: "12:00", category: "Credit Card Payment", from: "acc-hdfc-savings", to: "cc-amazon-pay" },
+  { type: "income", title: "Refund · Myntra", amount: 840, date: "2026-10-12", time: "15:10", category: "Refund", to: "acc-hdfc-savings" },
+  { type: "expense", title: "Apollo Pharmacy", amount: 960, date: "2026-10-10", time: "19:25", category: "Healthcare", from: "acc-cash" },
+  { type: "expense", title: "Udemy course", amount: 1499, date: "2026-10-08", time: "21:00", category: "Education", from: "cc-hdfc-millennia" },
+  { type: "expense", title: "Pet food", amount: 901, date: "2026-10-05", time: "11:30", category: "Pets", from: "acc-cash" },
 ];
+
+export const transactions: Transaction[] = DUMMY.map((d, i) => {
+  const stamp = `${d.date}T${d.time}:00.000Z`;
+  return {
+    id: `txn-${String(i + 1).padStart(3, "0")}`,
+    type: d.type,
+    title: d.title,
+    amount: d.amount,
+    transactionDate: d.date,
+    fromAccountId: d.from,
+    toAccountId: d.to,
+    categoryId: categoryId(d.category),
+    subCategoryId: d.subcategory ? subCategoryId(d.subcategory) : undefined,
+    note: d.note,
+    isDeleted: false,
+    createdAt: stamp,
+    updatedAt: stamp,
+  };
+});

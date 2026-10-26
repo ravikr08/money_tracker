@@ -5,7 +5,7 @@ export type Accounts = {
   type: AccountsType;
   openingBalance: number;
   color: string;
-  status: "active" | "archived";
+  status: "active" | "archived" | "deleted";
 };
 
 export type CreditCardAccount = {
@@ -22,14 +22,22 @@ export type CreditCardAccount = {
   paymentDueDate: number;
 
   color: string;
-  status: "active" | "archived";
+  status: "active" | "archived" | "deleted";
 };
 
-export type AccountInputValues = Pick<Accounts, "name" | "type" | "openingBalance" | "color">;
+export type AccountInputValues = Pick<
+  Accounts,
+  "name" | "type" | "openingBalance" | "color"
+>;
 
 export type CreditCardInputValues = Pick<
   CreditCardAccount,
-  "name" | "creditLimit" | "outstandingBalance" | "statementDate" | "paymentDueDate" | "color"
+  | "name"
+  | "creditLimit"
+  | "outstandingBalance"
+  | "statementDate"
+  | "paymentDueDate"
+  | "color"
 >;
 
 // what the dialog edits, numbers are strings while typing so an empty input can really be empty
